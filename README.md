@@ -6,8 +6,6 @@ A browser userscript that sits on top of the original TorrServer web UI and leav
 
 ![TorrServer ++ in motion](media/promo-loop.gif)
 
-![The TorrServer window with the additions highlighted](media/ui-map.png)
-
 ## Left click or right click?
 
 This is the one thing new users miss: every button the script adds responds to both mouse buttons.
@@ -30,15 +28,11 @@ The script matches `localhost:8090` and any other host on port `8090`. If your s
 
 ## Quick add
 
-![Quick add flow](media/quick-add-flow.png)
-
 Paste any text containing info hashes or `magnet:` links. Duplicates are removed, trackers are appended, and the torrents go straight to your server. With "Auto: clean name & fetch cover" checked, the script waits for metadata, renames the torrent in the app's card format, and picks the best cover it can find. Auto mode also repairs torrents that are already on the server.
 
 Cover sources, in order: TMDB (only if your server has a TMDB API key configured), AniList, iTunes Search.
 
 ## MPV playback (optional)
-
-![MPV playback flow](media/mpv-flow.png)
 
 The MPV buttons need [mpv-handler](https://github.com/akiirui/mpv-handler) installed on the machine that runs your browser. Without it, clicking MPV does nothing because no app is registered for the `mpv-handler://` protocol.
 

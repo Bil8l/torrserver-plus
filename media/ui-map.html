@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Where everything lives</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #212324;
+      --color-ink:     #f1eff3;
+      --color-muted:   #a9b2b7;
+      --color-soft:    #8a949a;
+      --color-accent:  #7be3c3;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1320px; width: 100%; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 1280px; display: block; }
+    @media print {
+      .diagram-container { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">TorrServer ++ · UI Map</p>
+    <h1>Where everything lives</h1>
+    <div class="diagram-container">
+      <svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ui-map-title ui-map-desc">
+        <title id="ui-map-title">TorrServer ++ additions in the web UI</title>
+        <desc id="ui-map-desc">Mock of the TorrServer window with the userscript additions highlighted: a Copy link and an MPV button on every torrent card, a Quick add sidebar entry, and a floating button whose badge lights up when the clipboard holds a torrent hash.</desc>
+        <rect width="100%" height="100%" fill="#212324"/>
+
+        <!-- ============ app window mock ============ -->
+        <rect x="40" y="48" width="1200" height="552" rx="8" fill="#323637" stroke="rgba(241,239,243,0.25)" stroke-width="1"/>
+        <line x1="280" y1="48" x2="280" y2="600" stroke="rgba(241,239,243,0.12)" stroke-width="1"/>
+
+        <!-- sidebar -->
+        <text x="72" y="92" font-family="'Geist Mono', monospace" font-size="8" letter-spacing="0.18em" fill="#8a949a">TORRSERVER</text>
+
+        <rect x="64" y="120" width="192" height="40" rx="4" fill="rgba(241,239,243,0.03)"/>
+        <line x1="80" y1="134" x2="92" y2="134" stroke="#8a949a" stroke-width="1.2"/>
+        <line x1="80" y1="140" x2="92" y2="140" stroke="#8a949a" stroke-width="1.2"/>
+        <line x1="80" y1="146" x2="92" y2="146" stroke="#8a949a" stroke-width="1.2"/>
+        <text x="104" y="144" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#a9b2b7">Torrents</text>
+
+        <rect x="64" y="168" width="192" height="40" rx="4" fill="rgba(241,239,243,0.03)"/>
+        <line x1="80" y1="188" x2="92" y2="188" stroke="#8a949a" stroke-width="1.2"/>
+        <line x1="86" y1="182" x2="86" y2="194" stroke="#8a949a" stroke-width="1.2"/>
+        <text x="104" y="192" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#a9b2b7">Add torrent</text>
+
+        <rect x="64" y="216" width="192" height="40" rx="4" fill="rgba(123,227,195,0.10)" stroke="rgba(123,227,195,0.35)" stroke-width="1"/>
+        <path d="M89 226 L82 238 L86.5 238 L84 246 L92 234 L87.5 234 Z" fill="#7be3c3"/>
+        <text x="104" y="240" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#7be3c3">Quick add</text>
+        <circle cx="268" cy="236" r="10" fill="#212324" stroke="#7be3c3" stroke-width="1.2"/>
+        <text x="268" y="240" font-family="'Geist Mono', monospace" font-size="9" fill="#7be3c3" text-anchor="middle">3</text>
+
+        <rect x="64" y="264" width="192" height="40" rx="4" fill="rgba(241,239,243,0.03)"/>
+        <circle cx="86" cy="283" r="5" fill="none" stroke="#8a949a" stroke-width="1.2"/>
+        <line x1="90" y1="287" x2="94" y2="291" stroke="#8a949a" stroke-width="1.2"/>
+        <text x="104" y="288" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#a9b2b7">Search</text>
+
+        <rect x="64" y="312" width="192" height="40" rx="4" fill="rgba(241,239,243,0.03)"/>
+        <line x1="80" y1="328" x2="92" y2="328" stroke="#8a949a" stroke-width="1.2"/>
+        <line x1="80" y1="336" x2="92" y2="336" stroke="#8a949a" stroke-width="1.2"/>
+        <circle cx="84" cy="328" r="1.8" fill="#8a949a"/>
+        <circle cx="88" cy="336" r="1.8" fill="#8a949a"/>
+        <text x="104" y="336" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#a9b2b7">Settings</text>
+
+        <!-- main area -->
+        <text x="312" y="100" font-family="'Geist', sans-serif" font-size="14" font-weight="600" fill="#f1eff3">Torrents</text>
+
+        <!-- torrent card -->
+        <rect x="312" y="128" width="896" height="200" rx="6" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.12)" stroke-width="1"/>
+        <rect x="336" y="152" width="96" height="152" rx="4" fill="rgba(241,239,243,0.06)" stroke="rgba(241,239,243,0.15)" stroke-width="1"/>
+        <circle cx="366" cy="182" r="7" fill="none" stroke="#8a949a" stroke-width="1.2"/>
+        <path d="M348 288 L376 244 L396 270 L408 254 L424 288" fill="none" stroke="#8a949a" stroke-width="1.2"/>
+        <text x="456" y="176" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#f1eff3">Example Show S01 (2024) [1080p]</text>
+        <text x="456" y="196" font-family="'Geist Mono', monospace" font-size="9" fill="#8a949a">2.4 GB · 12 files · 34 seeds</text>
+        <rect x="456" y="208" width="400" height="4" rx="2" fill="rgba(241,239,243,0.08)"/>
+        <rect x="456" y="208" width="260" height="4" rx="2" fill="rgba(123,227,195,0.55)"/>
+
+        <!-- native buttons (unchanged) -->
+        <rect x="456" y="256" width="88" height="40" rx="4" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.35)" stroke-width="1"/>
+        <text x="500" y="280" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#f1eff3" text-anchor="middle">Details</text>
+        <rect x="560" y="256" width="72" height="40" rx="4" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.35)" stroke-width="1"/>
+        <text x="596" y="280" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#f1eff3" text-anchor="middle">Play</text>
+        <rect x="872" y="256" width="72" height="40" rx="4" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.35)" stroke-width="1"/>
+        <text x="908" y="280" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#a9b2b7" text-anchor="middle">Drop</text>
+        <rect x="960" y="256" width="80" height="40" rx="4" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.35)" stroke-width="1"/>
+        <text x="1000" y="280" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#a9b2b7" text-anchor="middle">Delete</text>
+
+        <!-- added: Copy link (mint) -->
+        <rect x="648" y="256" width="112" height="40" rx="4" fill="#7be3c3"/>
+        <text x="704" y="280" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#1a1a1a" text-anchor="middle">Copy link</text>
+        <!-- added: MPV (purple) -->
+        <rect x="776" y="256" width="80" height="40" rx="4" fill="#571358" stroke="rgba(201,131,205,0.6)" stroke-width="1"/>
+        <text x="816" y="280" font-family="'Geist', sans-serif" font-size="12" font-weight="600" fill="#f1eff3" text-anchor="middle">MPV</text>
+
+        <text x="760" y="316" font-family="'Geist Mono', monospace" font-size="8" letter-spacing="0.06em" fill="#8a949a" text-anchor="middle">LEFT CLICK: PLAYLIST · RIGHT CLICK: ONE EPISODE</text>
+
+        <!-- feature dots -->
+        <circle cx="760" cy="256" r="10" fill="#212324" stroke="#7be3c3" stroke-width="1.2"/>
+        <text x="760" y="260" font-family="'Geist Mono', monospace" font-size="9" fill="#7be3c3" text-anchor="middle">1</text>
+        <circle cx="856" cy="256" r="10" fill="#212324" stroke="#7be3c3" stroke-width="1.2"/>
+        <text x="856" y="260" font-family="'Geist Mono', monospace" font-size="9" fill="#7be3c3" text-anchor="middle">2</text>
+
+        <!-- floating quick add button -->
+        <circle cx="1152" cy="544" r="28" fill="#7be3c3"/>
+        <line x1="1140" y1="544" x2="1164" y2="544" stroke="#1a1a1a" stroke-width="2.5"/>
+        <line x1="1152" y1="532" x2="1152" y2="556" stroke="#1a1a1a" stroke-width="2.5"/>
+        <circle cx="1172" cy="522" r="6" fill="#f1eff3" stroke="#323637" stroke-width="2"/>
+        <circle cx="1196" cy="572" r="10" fill="#212324" stroke="#7be3c3" stroke-width="1.2"/>
+        <text x="1196" y="576" font-family="'Geist Mono', monospace" font-size="9" fill="#7be3c3" text-anchor="middle">4</text>
+
+        <!-- callout: nothing removed -->
+        <text x="1208" y="116" font-family="'Instrument Serif', serif" font-style="italic" font-size="14" fill="#f1eff3" text-anchor="end">the original buttons stay; the mint and purple ones come from TorrServer ++</text>
+        <path d="M 900 124 Q 780 180 680 246" fill="none" stroke="rgba(241,239,243,0.40)" stroke-width="1" stroke-dasharray="4,3"/>
+        <circle cx="680" cy="248" r="2" fill="#f1eff3"/>
+
+        <!-- callout: clipboard badge -->
+        <text x="312" y="568" font-family="'Instrument Serif', serif" font-style="italic" font-size="14" fill="#f1eff3">the badge lights up when the clipboard holds a hash or magnet</text>
+        <path d="M 700 556 Q 950 575 1160 534" fill="none" stroke="rgba(241,239,243,0.40)" stroke-width="1" stroke-dasharray="4,3"/>
+        <circle cx="1162" cy="532" r="2" fill="#f1eff3"/>
+
+        <!-- legend -->
+        <line x1="40" y1="652" x2="1240" y2="652" stroke="rgba(241,239,243,0.10)" stroke-width="0.8"/>
+        <text x="40" y="676" font-family="'Geist Mono', monospace" font-size="8" letter-spacing="0.14em" fill="#a9b2b7">LEGEND</text>
+        <text x="40" y="700" font-family="'Geist Mono', monospace" font-size="9" fill="#7be3c3">1</text>
+        <text x="54" y="700" font-family="'Geist', sans-serif" font-size="10" font-weight="600" fill="#f1eff3">COPY LINK</text>
+        <text x="122" y="700" font-family="'Geist Mono', monospace" font-size="8" fill="#8a949a">left: playlist · right: episode</text>
+        <text x="320" y="700" font-family="'Geist Mono', monospace" font-size="9" fill="#7be3c3">2</text>
+        <text x="334" y="700" font-family="'Geist', sans-serif" font-size="10" font-weight="600" fill="#f1eff3">MPV</text>
+        <text x="374" y="700" font-family="'Geist Mono', monospace" font-size="8" fill="#8a949a">left: play · right: episode</text>
+        <text x="560" y="700" font-family="'Geist Mono', monospace" font-size="9" fill="#7be3c3">3</text>
+        <text x="574" y="700" font-family="'Geist', sans-serif" font-size="10" font-weight="600" fill="#f1eff3">QUICK ADD</text>
+        <text x="650" y="700" font-family="'Geist Mono', monospace" font-size="8" fill="#8a949a">paste hashes or magnets</text>
+        <text x="820" y="700" font-family="'Geist Mono', monospace" font-size="9" fill="#7be3c3">4</text>
+        <text x="834" y="700" font-family="'Geist', sans-serif" font-size="10" font-weight="600" fill="#f1eff3">FAB</text>
+        <text x="866" y="700" font-family="'Geist Mono', monospace" font-size="8" fill="#8a949a">lights up on a hash</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

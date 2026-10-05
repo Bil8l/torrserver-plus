@@ -1,12 +1,22 @@
 # TorrServer ++
 
-Browser userscript for the TorrServer web UI (tested with MatriX). It adds a few things the stock interface is missing:
+![TorrServer ++](media/banner-og.png)
 
-- **Copy link** button on every torrent card. Left click copies the playlist (`.m3u`) link, right click picks a single episode and copies its direct stream link.
-- **MPV** button on every card and next to every file in the details dialog. Left click plays the whole playlist in mpv, right click picks one episode.
-- **Quick add**: paste one or more 40 character info hashes or magnet links, the script builds full magnets with trackers and adds them straight to your server. Auto mode rewrites the title into the app's usual format (`Title SxxEyy (Year) [resolution]`) and fetches a cover from TMDB, AniList or iTunes.
-- A floating **+** button that lights up when your clipboard holds a hash or magnet, and opens Quick add prefilled.
-- Recolors the **Copy link** buttons inside the details dialog.
+A browser userscript that sits on top of the original TorrServer web UI and leaves it untouched. Everything the original does keeps working exactly as before. TorrServer ++ adds faster paths for the two things you do most: start watching without opening each torrent, and copy a link straight from the card grid.
+
+![The TorrServer window with the additions highlighted](media/ui-map.png)
+
+## Left click or right click?
+
+This is the one thing new users miss: every button the script adds responds to both mouse buttons.
+
+| Button | Left click | Right click |
+|---|---|---|
+| **Copy link** (card) | copies the playlist (`.m3u`) link | opens the episode picker, copies one episode's direct link |
+| **MPV** (card) | plays the whole playlist in mpv | opens the episode picker, plays one episode |
+| **MPV** (details dialog) | plays that file | |
+
+Want one specific episode? Right click. Want the whole thing? Left click.
 
 ## Install
 
@@ -16,17 +26,21 @@ Browser userscript for the TorrServer web UI (tested with MatriX). It adds a few
 
 The script matches `localhost:8090` and any other host on port `8090`. If your server runs on a different port, edit the `@match` lines at the top of the script.
 
+## Quick add
+
+![Quick add flow](media/quick-add-flow.png)
+
+Paste any text containing info hashes or `magnet:` links. Duplicates are removed, trackers are appended, and the torrents go straight to your server. With "Auto: clean name & fetch cover" checked, the script waits for metadata, renames the torrent in the app's card format, and picks the best cover it can find. Auto mode also repairs torrents that are already on the server.
+
+Cover sources, in order: TMDB (only if your server has a TMDB API key configured), AniList, iTunes Search.
+
 ## MPV playback (optional)
+
+![MPV playback flow](media/mpv-flow.png)
 
 The MPV buttons need [mpv-handler](https://github.com/akiirui/mpv-handler) installed on the machine that runs your browser. Without it, clicking MPV does nothing because no app is registered for the `mpv-handler://` protocol.
 
 The default config works with mpv-handler v0.4 and newer. For older versions set `MPV_SCHEME = 'legacy'` in the config block at the top of the script.
-
-## Quick add
-
-Paste any text containing info hashes or `magnet:` links. Duplicates are removed, trackers are appended, and the torrents go straight to your server. With "Auto: clean name & fetch cover" checked, the script waits for metadata, renames the torrent in the app's card format, and picks the best cover it can find.
-
-Cover sources, in order: TMDB (only if your server has a TMDB API key configured), AniList, iTunes Search.
 
 ## Privacy
 

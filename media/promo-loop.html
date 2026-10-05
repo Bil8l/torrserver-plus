@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>TorrServer ++ promo loop</title>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 1920px; height: 1080px; overflow: hidden; background: #212324; }
@@ -15,14 +15,17 @@
   .cap-eyebrow { font-family: 'Geist Mono', monospace; font-size: 15px; font-weight: 500; letter-spacing: 0.22em; color: #7be3c3; margin-bottom: 10px; }
   .cap-text { font-family: 'Geist', sans-serif; font-size: 40px; font-weight: 600; letter-spacing: -0.02em; text-transform: uppercase; color: #f1eff3; line-height: 1.1; }
   #cur { position: absolute; left: 0; top: 0; z-index: 10; }
-  .ring { position: absolute; border-radius: 50%; z-index: 9; }
 </style>
 </head>
 <body>
 <div class="stage">
-  <svg id="world" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="promo-title promo-desc">
+  <svg id="world" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" aria-labelledby="promo-title promo-desc">
     <title id="promo-title">TorrServer ++ promotional loop</title>
-    <desc id="promo-desc">A looping product video: starting from an empty list, a cursor adds a torrent from a clipboard hash, the torrent gets a clean name and cover, then its playlist link is copied, an episode is picked and the stream opens in mpv.</desc>
+    <desc id="promo-desc">A looping product video: starting from an empty list, a cursor adds a torrent from a clipboard hash, the torrent gets a clean name and cover, then its playlist link is copied, an episode is picked and one episode plays in mpv.</desc>
+    <defs>
+      <clipPath id="posterClip"><rect x="488" y="208" width="176" height="276" rx="8"/></clipPath>
+      <clipPath id="copyClip"><rect x="976" y="376" width="168" height="72" rx="8"/></clipPath>
+    </defs>
     <rect x="-2000" y="-2000" width="6000" height="5000" fill="#212324"/>
 
     <!-- app window -->
@@ -70,18 +73,16 @@
       <rect x="456" y="176" width="1392" height="340" rx="10" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.12)" stroke-width="1.5"/>
       <rect x="488" y="208" width="176" height="276" rx="8" fill="rgba(241,239,243,0.06)" stroke="rgba(241,239,243,0.15)" stroke-width="1.5"/>
       <text id="a2hashGlyph" x="576" y="364" font-family="'Geist Mono', monospace" font-size="52" fill="#8a949a" text-anchor="middle">#</text>
-      <g id="a2mintPoster" opacity="0">
-        <rect x="488" y="208" width="176" height="276" rx="8" fill="rgba(123,227,195,0.12)" stroke="rgba(123,227,195,0.35)" stroke-width="1.5"/>
-        <circle cx="546" cy="268" r="11" fill="none" stroke="#7be3c3" stroke-width="2"/>
-        <path d="M502 452 L550 380 L584 422 L602 398 L646 452" fill="none" stroke="#7be3c3" stroke-width="2"/>
+      <g id="a2cover" opacity="0">
+        <image href="cover%20sample.webp" x="488" y="208" width="176" height="276" preserveAspectRatio="xMidYMid slice" clip-path="url(#posterClip)"/>
       </g>
       <g id="a2titleA">
         <text x="704" y="256" font-family="'Geist Mono', monospace" font-size="20" fill="#a9b2b7">a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0</text>
-        <text x="704" y="292" font-family="'Geist Mono', monospace" font-size="15" fill="#8a949a">4.7 GB · 1 file · fetching metadata…</text>
+        <text x="704" y="292" font-family="'Geist Mono', monospace" font-size="15" fill="#8a949a">4.2 GB · 4 files · fetching metadata…</text>
       </g>
       <g id="a2titleB" opacity="0">
-        <text x="704" y="256" font-family="'Geist', sans-serif" font-size="24" font-weight="600" fill="#f1eff3">Example Movie (2024) [1080p]</text>
-        <text x="704" y="292" font-family="'Geist Mono', monospace" font-size="15" fill="#8a949a">1.4 GB · 1 file · 12 seeds</text>
+        <text x="704" y="256" font-family="'Geist', sans-serif" font-size="24" font-weight="600" fill="#f1eff3">Example Show S02 (2024) [1080p]</text>
+        <text x="704" y="292" font-family="'Geist Mono', monospace" font-size="15" fill="#8a949a">4.2 GB · 4 files · 12 seeds</text>
       </g>
       <rect x="704" y="316" width="560" height="6" rx="3" fill="rgba(241,239,243,0.08)"/>
       <rect id="a2prog" x="704" y="316" width="8" height="6" rx="3" fill="#7be3c3" opacity="0.3"/>
@@ -92,8 +93,10 @@
         <rect x="852" y="376" width="108" height="72" rx="8" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.35)" stroke-width="1.5"/>
         <text x="906" y="420" fill="#f1eff3">Play</text>
         <rect x="976" y="376" width="168" height="72" rx="8" fill="#7be3c3"/>
-        <text id="copyA" x="1060" y="420" fill="#1a1a1a">Copy link</text>
-        <text id="copyB" x="1060" y="420" fill="#1a1a1a" opacity="0">Copied!</text>
+        <g clip-path="url(#copyClip)">
+          <text id="copyA" x="1060" y="420" fill="#1a1a1a">Copy link</text>
+          <text id="copyB" x="1060" y="444" fill="#1a1a1a">Copied!</text>
+        </g>
         <rect x="1160" y="376" width="120" height="72" rx="8" fill="#571358" stroke="rgba(201,131,205,0.6)" stroke-width="1.5"/>
         <text x="1220" y="420" fill="#f1eff3">MPV</text>
         <rect x="1296" y="376" width="108" height="72" rx="8" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.35)" stroke-width="1.5"/>
@@ -164,7 +167,7 @@
     <!-- mpv player mock -->
     <g id="player" opacity="0">
       <rect x="1180" y="560" width="676" height="440" rx="12" fill="#1d1f20" stroke="rgba(241,239,243,0.30)" stroke-width="1.5"/>
-      <text x="1212" y="612" font-family="'Geist', sans-serif" font-size="20" font-weight="600" fill="#f1eff3">Example Movie (2024)</text>
+      <text x="1212" y="612" font-family="'Geist', sans-serif" font-size="20" font-weight="600" fill="#f1eff3">Example Show S02E03</text>
       <circle id="liveDot" cx="1756" cy="605" r="5" fill="#7be3c3"/>
       <text x="1770" y="611" font-family="'Geist Mono', monospace" font-size="14" letter-spacing="0.10em" fill="#7be3c3">STREAMING</text>
       <rect x="1212" y="640" width="612" height="220" rx="8" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.08)" stroke-width="1"/>
@@ -187,15 +190,15 @@
     <div id="cap1"></div>
     <div id="cap0"></div>
     <div id="cur">
-      <svg width="52" height="80" viewBox="0 0 52 80">
-        <defs><clipPath id="mouseClip"><rect x="1.25" y="1.25" width="49.5" height="77.5" rx="24.75"/></clipPath></defs>
-        <rect x="1.25" y="1.25" width="49.5" height="77.5" rx="24.75" fill="rgba(26,26,26,0.72)" stroke="#f1eff3" stroke-width="2.5"/>
+      <svg width="60" height="92" viewBox="0 0 60 92">
+        <defs><clipPath id="mouseClip"><rect x="1.25" y="1.25" width="57.5" height="89.5" rx="28.75"/></clipPath></defs>
+        <rect x="1.25" y="1.25" width="57.5" height="89.5" rx="28.75" fill="rgba(26,26,26,0.72)" stroke="#f1eff3" stroke-width="2.5"/>
         <g clip-path="url(#mouseClip)">
-          <rect id="mbtnL" x="0" y="0" width="26" height="36" fill="#7be3c3" opacity="0"/>
-          <rect id="mbtnR" x="26" y="0" width="26" height="36" fill="#c983cd" opacity="0"/>
+          <rect id="mbtnL" x="0" y="0" width="30" height="40" fill="#7be3c3" opacity="0"/>
+          <rect id="mbtnR" x="30" y="0" width="30" height="40" fill="#c983cd" opacity="0"/>
         </g>
-        <line x1="26" y1="1.25" x2="26" y2="36" stroke="#f1eff3" stroke-width="1.5" opacity="0.5"/>
-        <rect x="24" y="11" width="4" height="15" rx="2" fill="#f1eff3"/>
+        <line x1="30" y1="1.25" x2="30" y2="40" stroke="#f1eff3" stroke-width="1.5" opacity="0.5"/>
+        <rect x="28" y="12" width="4" height="16" rx="2" fill="#f1eff3"/>
       </svg>
     </div>
   </div>
@@ -204,7 +207,7 @@
 <script>
 (function () {
   'use strict'
-  const P = 16
+  const P = 18
   const $ = id => document.getElementById(id)
   const world = $('world')
   const NS = 'http://www.w3.org/2000/svg'
@@ -212,6 +215,7 @@
   function S (u, w, z) {
     if (u <= 0) return 0
     if (u > 4 / w) return 1
+    if (z >= 1) return 1 - Math.exp(-w * u) * (1 + w * u)
     const wd = w * Math.sqrt(1 - z * z)
     return 1 - Math.exp(-z * w * u) * (Math.cos(wd * u) + (z * w / wd) * Math.sin(wd * u))
   }
@@ -228,14 +232,14 @@
 
   const CAM = [
     [0.00, 960, 540, 1920, 8],
-    [2.60, 1450, 800, 1080, 6.5],
-    [3.80, 1360, 430, 1150, 6.5],
-    [5.70, 1150, 580, 1500, 6.5],
-    [8.10, 1080, 430, 1150, 6.5],
-    [10.90, 1080, 470, 1250, 6.5],
-    [13.60, 1220, 430, 1150, 6.5],
-    [13.90, 1500, 780, 1080, 7],
-    [15.00, 960, 540, 1920, 14, 0.95]
+    [1.40, 1400, 780, 1200, 6],
+    [2.70, 1360, 430, 1150, 6],
+    [5.90, 1100, 560, 1450, 6],
+    [8.60, 1080, 430, 1200, 6],
+    [12.20, 1080, 470, 1300, 6],
+    [14.90, 1240, 440, 1250, 6],
+    [15.60, 1500, 780, 1150, 6.5],
+    [16.55, 960, 540, 1920, 13, 0.95]
   ]
   function camAt (t) {
     const out = [960, 540, 1920]
@@ -249,16 +253,17 @@
   }
 
   const KEYS = [
-    [0.00, -80, 1150], [1.60, 650, 650], [2.90, 1772, 968], [3.50, 1772, 968],
-    [4.40, 1016, 486], [4.90, 1016, 486],
-    [5.30, 1640, 620], [5.35, 1640, 620],
-    [6.90, 1150, 600],
-    [8.60, 1092, 434], [9.00, 1092, 434],
+    [0.00, -80, 1150], [1.00, 650, 650], [2.00, 1772, 968], [2.20, 1772, 968],
+    [3.60, 1016, 486], [4.50, 1016, 486],
+    [5.10, 1640, 620], [5.20, 1640, 620],
+    [6.80, 1150, 600],
+    [9.20, 1092, 434], [9.60, 1092, 434], [9.95, 950, 480], [10.40, 950, 480],
     [10.85, 1092, 434], [10.90, 1092, 434],
-    [11.50, 1186, 504], [12.00, 1186, 616], [12.35, 1186, 616],
-    [13.40, 1186, 616], [13.50, 1220, 412], [13.55, 1220, 412],
-    [14.30, 1396, 920], [14.45, 1396, 920], [14.72, 1542, 920], [14.78, 1542, 920],
-    [15.80, -80, 1150], [16.00, -80, 1150]
+    [11.90, 1186, 504], [12.40, 1186, 616], [12.70, 1186, 616],
+    [13.85, 1092, 434], [13.90, 1220, 412], [13.95, 1220, 412],
+    [14.80, 1186, 504], [15.10, 1186, 616], [15.35, 1186, 616],
+    [16.05, 1396, 920], [16.20, 1396, 920], [16.50, 1542, 920], [16.53, 1542, 920],
+    [17.90, -80, 1150], [18.00, -80, 1150]
   ]
   function cursorAt (t) {
     const K = KEYS
@@ -271,21 +276,20 @@
     for (let k = 1; k <= 2; k++) {
       const m1 = (p2[k] - p0[k]) / ((p2[0] - p0[0]) || 1)
       const m2 = (p3[k] - p1[k]) / ((p3[0] - p1[0]) || 1)
-      const v1 = p1[k], v2 = p2[k]
-      out.push((2 * Math.pow(u, 3) - 3 * u * u + 1) * v1 + (Math.pow(u, 3) - 2 * u * u + u) * dt * m1 +
-               (-2 * Math.pow(u, 3) + 3 * u * u) * v2 + (Math.pow(u, 3) - u * u) * dt * m2)
+      out.push((2 * Math.pow(u, 3) - 3 * u * u + 1) * p1[k] + (Math.pow(u, 3) - 2 * u * u + u) * dt * m1 +
+               (-2 * Math.pow(u, 3) + 3 * u * u) * p2[k] + (Math.pow(u, 3) - u * u) * dt * m2)
     }
     return out
   }
 
   const PRESSES = [
-    [3.5, 'L', 0.22], [4.9, 'L', 0.22], [5.35, 'L', 0.22], [9.0, 'L', 0.22],
-    [10.9, 'R', 0.22], [12.35, 'L', 0.22], [13.55, 'L', 0.22], [14.45, 'L', 0.33]
+    [2.2, 'L', 0.26], [4.5, 'L', 0.26], [5.2, 'L', 0.26], [9.6, 'L', 0.26],
+    [10.9, 'R', 0.3], [12.7, 'L', 0.26], [13.9, 'R', 0.3], [15.35, 'L', 0.26], [16.15, 'L', 0.33]
   ]
   const RIPPLES = [
-    [3.5, 1772, 968, '#7be3c3'], [4.9, 1016, 486, '#7be3c3'], [5.35, 1640, 620, '#7be3c3'],
-    [9.0, 1060, 412, '#7be3c3'], [10.9, 1060, 412, '#c983cd'], [12.35, 1186, 616, '#7be3c3'],
-    [13.55, 1220, 412, '#c983cd'], [14.45, 1396, 920, '#7be3c3']
+    [2.2, 1772, 968, '#7be3c3'], [4.5, 1016, 486, '#7be3c3'], [5.2, 1640, 620, '#7be3c3'],
+    [9.6, 1060, 412, '#7be3c3'], [10.9, 1060, 412, '#c983cd'], [12.7, 1186, 616, '#7be3c3'],
+    [13.9, 1220, 412, '#c983cd'], [15.35, 1186, 616, '#7be3c3'], [16.2, 1396, 920, '#7be3c3']
   ]
   const ringEls = RIPPLES.map(() => {
     const c = document.createElementNS(NS, 'circle')
@@ -301,10 +305,10 @@
     ['03 / 06 · TORRSERVER ++', 'ADDED: NAMED AND COVERED'],
     ['04 / 06 · TORRSERVER ++', 'LEFT CLICK: THE WHOLE PLAYLIST'],
     ['05 / 06 · TORRSERVER ++', 'RIGHT CLICK: ONE EPISODE'],
-    ['06 / 06 · TORRSERVER ++', 'STRAIGHT TO MPV']
+    ['06 / 06 · TORRSERVER ++', 'RIGHT CLICK: PLAY ONE EPISODE']
   ]
-  const CAP_ENTER = [15.35, 2.5, 5.5, 8, 10.5, 13]
-  const CAP_EXIT = [2.4, 5.4, 7.9, 10.4, 12.9, 15.2]
+  const CAP_ENTER = [16.9, 2.5, 5.5, 8.5, 10.5, 13.5]
+  const CAP_EXIT = [2.4, 5.4, 8.4, 10.4, 13.4, 16.75]
   const capEls = [$('cap0'), $('cap1')]
   function renderCap (el, i, vis, enterS, exitS) {
     if (vis <= 0.005) { el.style.opacity = '0'; return }
@@ -327,88 +331,86 @@
     const w2s = wx => (wx - vx) / kScreen
     const w2sy = wy => (wy - vy) / kScreen
 
-    // copy link label swap
-    const ls = chain(t, [[0, 0], [9.0, 1, 22, 1], [9.6, 0, 22, 1], [12.6, 1, 22, 1], [13.25, 0, 22, 1]])
-    const lblBlur = Math.max(0, 6 * Math.min(ls, 1 - ls) * kScreen).toFixed(2)
-    $('copyA').setAttribute('opacity', (1 - Math.min(1, ls)).toFixed(3))
-    $('copyA').style.filter = 'blur(' + lblBlur + 'px)'
-    $('copyB').setAttribute('opacity', Math.min(1, ls).toFixed(3))
-    $('copyB').style.filter = 'blur(' + lblBlur + 'px)'
+    // copy link label: masked slide-up swap, no overlap
+    const yA = chain(t, [[0, 420], [9.6, 372, 16, 1], [13.15, 420, 16, 1]])
+    const yB = chain(t, [[0, 468], [9.6, 420, 16, 1], [13.15, 468, 16, 1]])
+    $('copyA').setAttribute('y', yA.toFixed(2))
+    $('copyB').setAttribute('y', yB.toFixed(2))
 
-    // episode picker
-    const ms = chain(t, [[0, 0], [11.0, 1, 16, 0.62], [12.55, 0, 16, 0.62]])
+    // episode picker (opens twice: copy, then play)
+    const ms = chain(t, [[0, 0], [11.0, 1, 16, 0.62], [13.1, 0, 20, 0.7], [14.15, 1, 16, 0.62], [16.2, 0, 20, 0.7]])
     const pick = $('picker')
     pick.setAttribute('opacity', Math.min(1, ms * 1.8).toFixed(3))
     pick.setAttribute('transform', 'translate(976 472) scale(' + (0.9 + 0.1 * ms).toFixed(4) + ') translate(-976 -472)')
-    const hiTop = chain(t, [[0, 480], [11.5, 480, 17, 0.7], [12.0, 592, 17, 0.7]])
-    const hiBot = chain(t, [[0, 528], [11.5, 528, 10, 0.7], [12.0, 640, 10, 0.7]])
+    const hiTop = chain(t, [[0, 480], [11.9, 480, 17, 0.7], [12.4, 592, 17, 0.7], [14.8, 480, 17, 0.7], [15.1, 592, 17, 0.7]])
+    const hiBot = chain(t, [[0, 528], [11.9, 528, 10, 0.7], [12.4, 640, 10, 0.7], [14.8, 528, 10, 0.7], [15.1, 640, 10, 0.7]])
     const hi = $('pickHi')
     hi.setAttribute('y', hiTop.toFixed(2)); hi.setAttribute('height', Math.max(0, hiBot - hiTop).toFixed(2))
     hi.setAttribute('opacity', (ms * chain(t, [[0, 0], [11.5, 1, 14, 0.8]])).toFixed(3))
-    $('ep3check').setAttribute('opacity', chain(t, [[0, 0], [12.38, 1, 16, 0.8]]).toFixed(3))
-    $('ep3text').setAttribute('fill', t >= 12.38 ? '#7be3c3' : '#f1eff3')
+    $('ep3check').setAttribute('opacity', chain(t, [[0, 0], [12.72, 1, 16, 0.8]]).toFixed(3))
+    $('ep3text').setAttribute('fill', t >= 12.72 ? '#7be3c3' : '#f1eff3')
 
     // fab badge
-    const bs = chain(t, [[0, 0], [3.0, 1, 18, 0.55], [15.0, 0, 16, 0.85]])
+    const bs = chain(t, [[0, 0], [1.2, 1, 18, 0.55], [17.0, 0, 16, 0.85]])
     const fb = $('fabBadge')
     fb.setAttribute('opacity', Math.min(1, bs * 2).toFixed(3))
     fb.setAttribute('transform', 'translate(1800 932) scale(' + Math.max(0.001, bs).toFixed(4) + ') translate(-1800 -932)')
 
     // quick add dialog
-    const ds = chain(t, [[0, 0], [3.75, 1, 15, 0.62], [5.5, 0, 15, 0.8]])
+    const ds = chain(t, [[0, 0], [2.45, 1, 15, 0.62], [5.45, 0, 15, 0.8]])
     const dlg = $('dlg')
     dlg.setAttribute('opacity', Math.min(1, ds * 1.8).toFixed(3))
     dlg.setAttribute('transform', 'translate(1360 420) scale(' + (0.90 + 0.10 * ds).toFixed(4) + ') translate(-1360 -420)')
-    const rev = smooth((t - 4.0) / 0.6)
+    const rev = smooth((t - 2.9) / 1.1)
     const nch = Math.round(HASH.length * rev)
     $('dlgText').textContent = HASH.slice(0, nch)
     const caret = $('dlgCaret')
     caret.setAttribute('x', (1020 + 3 + nch * 10.54).toFixed(1))
-    caret.setAttribute('opacity', (ds > 0.5 && t < 5.35 ? (Math.sin(2 * Math.PI * 2.2 * t) > 0 ? 1 : 0.15) : 0).toFixed(2))
-    $('dlgInfo').setAttribute('opacity', chain(t, [[0, 0], [4.7, 1, 14, 0.8], [5.5, 0, 14, 0.8]]).toFixed(3))
-    const kon = chain(t, [[0, 0], [4.9, 1, 19, 0.6]])
-    const kfill = chain(t, [[0, 0], [4.9, 1, 11, 0.7]])
+    caret.setAttribute('opacity', (ds > 0.5 && t < 5.2 ? (Math.sin(2 * Math.PI * 2.2 * t) > 0 ? 1 : 0.15) : 0).toFixed(2))
+    $('dlgInfo').setAttribute('opacity', chain(t, [[0, 0], [4.15, 1, 14, 0.8], [5.45, 0, 14, 0.8]]).toFixed(3))
+    const kon = chain(t, [[0, 0], [4.5, 1, 19, 0.6]])
+    const kfill = chain(t, [[0, 0], [4.5, 1, 11, 0.7]])
     $('tglKnob').setAttribute('cx', (1016 + 32 * kon).toFixed(2))
     $('tglFill').setAttribute('width', (64 * Math.min(1, kfill)).toFixed(2))
     $('tglLabel').setAttribute('fill', kfill > 0.5 ? '#f1eff3' : '#a9b2b7')
-    $('addFlash').setAttribute('opacity', (0.35 * chain(t, [[0, 0], [5.35, 1, 30, 1], [5.47, 0, 30, 1]])).toFixed(3))
+    $('addFlash').setAttribute('opacity', (0.35 * chain(t, [[0, 0], [5.2, 1, 30, 1], [5.32, 0, 30, 1]])).toFixed(3))
 
     // toast
-    const ts = chain(t, [[0, 0], [5.65, 1, 14, 0.7], [7.5, 0, 16, 0.85]])
+    const ts = chain(t, [[0, 0], [5.6, 1, 14, 0.7], [7.6, 0, 16, 0.85]])
     const toast = $('toast')
     toast.setAttribute('opacity', Math.min(1, ts * 1.6).toFixed(3))
     toast.setAttribute('transform', 'translate(' + (240 * (1 - ts)).toFixed(2) + ' 0)')
 
     // added card: slides in, hash swaps to clean name + cover, exits before the loop closes
-    const ain = chain(t, [[0, 0], [5.75, 1, 15, 0.62], [15.5, 0, 14, 0.9]])
-    const aout = chain(t, [[0, 0], [15.5, 1, 14, 0.9]])
+    const ain = chain(t, [[0, 0], [5.8, 1, 15, 0.62], [17.4, 0, 14, 0.9]])
+    const aout = chain(t, [[0, 0], [17.4, 1, 14, 0.9]])
     const ac = $('addCard')
     ac.setAttribute('opacity', Math.max(0, Math.min(1, ain * 1.6 * (1 - aout))).toFixed(3))
     ac.setAttribute('transform', 'translate(0 ' + (48 * (1 - ain) + 40 * aout).toFixed(2) + ')')
-    const s2 = chain(t, [[0, 0], [6.4, 1, 18, 1]])
+    const s2 = chain(t, [[0, 0], [6.9, 1, 14, 0.8]])
     const blur2 = Math.max(0, 8 * Math.min(s2, 1 - s2) * kScreen).toFixed(2)
     $('a2titleA').setAttribute('opacity', (1 - Math.min(1, s2)).toFixed(3))
     $('a2titleA').style.filter = 'blur(' + blur2 + 'px)'
     $('a2titleB').setAttribute('opacity', Math.min(1, s2).toFixed(3))
     $('a2titleB').style.filter = 'blur(' + blur2 + 'px)'
     $('a2hashGlyph').setAttribute('opacity', (1 - Math.min(1, s2)).toFixed(3))
-    const mp = $('a2mintPoster')
-    mp.setAttribute('opacity', Math.min(1, s2).toFixed(3))
-    mp.setAttribute('transform', 'translate(576 346) scale(' + (0.94 + 0.06 * Math.min(1, s2)).toFixed(4) + ') translate(-576 -346)')
+    const cv = $('a2cover')
+    cv.setAttribute('opacity', Math.min(1, s2).toFixed(3))
+    cv.setAttribute('transform', 'translate(576 346) scale(' + (0.94 + 0.06 * Math.min(1, s2)).toFixed(4) + ') translate(-576 -346)')
     $('a2prog').setAttribute('width', (8 + 332 * Math.min(1, s2)).toFixed(1))
     $('a2prog').setAttribute('opacity', (0.3 + 0.45 * Math.min(1, s2)).toFixed(2))
-    $('emptyHint').setAttribute('opacity', chain(t, [[0, 1], [5.6, 0, 14, 0.8], [15.68, 1, 14, 0.8]]).toFixed(3))
+    $('emptyHint').setAttribute('opacity', chain(t, [[0, 1], [5.7, 0, 14, 0.8], [17.0, 1, 14, 0.8]]).toFixed(3))
 
     // player
-    const ps = chain(t, [[0, 0], [13.55, 1, 15, 0.62], [15.0, 0, 15, 0.8]])
+    const ps = chain(t, [[0, 0], [15.55, 1, 15, 0.62], [16.6, 0, 15, 0.8]])
     const pl = $('player')
     pl.setAttribute('opacity', Math.min(1, ps * 1.6).toFixed(3))
     pl.setAttribute('transform', 'translate(' + (560 * (1 - ps)).toFixed(2) + ' 0)')
     let val
     const cur = cursorAt(t)
-    if (t >= 14.45 && t < 14.78) val = clamp((cur[0] - 1240) / 520, 0.30, 0.9)
-    else if (t >= 14.78) val = Math.min(0.9, 0.581 + 0.05 * (t - 14.78))
-    else val = 0.30 + 0.04 * Math.max(0, t - 13.7)
+    if (t >= 16.2 && t < 16.53) val = clamp((cur[0] - 1240) / 520, 0.30, 0.9)
+    else if (t >= 16.53) val = Math.min(0.9, 0.581 + 0.05 * (t - 16.53))
+    else val = 0.30 + 0.04 * Math.max(0, t - 15.6)
     $('playFill').setAttribute('width', (520 * val).toFixed(1))
     $('playKnob').setAttribute('cx', (1240 + 520 * val).toFixed(1))
     $('playTime').textContent = fmt(val * 1471) + ' / 24:31'
@@ -423,28 +425,28 @@
     RIPPLES.forEach((r, i) => {
       const age = t - r[0]
       const el = ringEls[i]
-      if (age < 0 || age > 0.7) { el.setAttribute('opacity', '0'); return }
+      if (age < 0 || age > 0.9) { el.setAttribute('opacity', '0'); return }
       el.setAttribute('cx', r[1]); el.setAttribute('cy', r[2])
-      el.setAttribute('r', (14 + 80 * easeOutC(age / 0.7) * kScreen).toFixed(1))
+      el.setAttribute('r', (14 + 85 * easeOutC(age / 0.9) * kScreen).toFixed(1))
       el.setAttribute('stroke', r[3])
-      el.setAttribute('opacity', (0.85 * (1 - age / 0.7)).toFixed(2))
+      el.setAttribute('opacity', (0.85 * (1 - age / 0.9)).toFixed(2))
     })
 
     // screen chrome: captions + mouse
     let idx
-    if (t >= 15.35) idx = 0
+    if (t >= 16.9) idx = 0
     else if (t < 2.5) idx = 0
     else if (t < 5.5) idx = 1
-    else if (t < 8) idx = 2
+    else if (t < 8.5) idx = 2
     else if (t < 10.5) idx = 3
-    else if (t < 13) idx = 4
+    else if (t < 13.5) idx = 4
     else idx = 5
-    const prev = idx === 0 ? (t >= 15.35 ? 5 : 0) : idx - 1
+    const prev = idx === 0 ? (t >= 16.9 ? 5 : 0) : idx - 1
     function capVis (i) {
-      const enterA = i === 0 ? t - 15.35 + P : t - CAP_ENTER[i]
+      const enterA = i === 0 ? (t >= 16.9 ? t - 16.9 : t + (P - 16.9)) : t - CAP_ENTER[i]
       const sin = S(enterA, 16, 0.75)
       let dtOut = CAP_EXIT[i] - t
-      if (i === 0 && t >= 15.35) dtOut += P
+      if (i === 0 && t >= 16.9) dtOut += P
       const sout = S(dtOut, 22, 1)
       return [sin * sout, sin, sout]
     }
@@ -455,7 +457,7 @@
 
     let press = 0, glowL = 0, glowR = 0
     for (const p of PRESSES) {
-      const env = chain(t, [[0, 0], [p[0], 1, 24, 1], [p[0] + p[2], 0, 24, 1]])
+      const env = chain(t, [[0, 0], [p[0], 1, 24, 1], [p[0] + 0.1, 1, 24, 1], [p[0] + p[2], 0, 24, 1]])
       press = Math.max(press, env)
       if (p[1] === 'L') glowL = Math.max(glowL, env)
       else glowR = Math.max(glowR, env)
@@ -463,8 +465,8 @@
     $('mbtnL').setAttribute('opacity', glowL.toFixed(3))
     $('mbtnR').setAttribute('opacity', glowR.toFixed(3))
     const sx = w2s(cur[0]), sy = w2sy(cur[1])
-    $('cur').style.transform = 'translate(' + (sx - 26).toFixed(1) + 'px,' + (sy - 40).toFixed(1) + 'px) scale(' + (1 - 0.10 * press).toFixed(3) + ')'
-    $('cur').style.transformOrigin = '26px 40px'
+    $('cur').style.transform = 'translate(' + (sx - 30).toFixed(1) + 'px,' + (sy - 46).toFixed(1) + 'px) scale(' + (1 - 0.10 * press).toFixed(3) + ')'
+    $('cur').style.transformOrigin = '30px 46px'
   }
 
   window.seek = seek

@@ -11,7 +11,7 @@ MEDIA = pathlib.Path(__file__).resolve().parent
 HTML = MEDIA / 'promo-loop.html'
 TMP = MEDIA / 'render_tmp'
 PREV = MEDIA / 'render_preview'
-FPS, SUB, DUR = 60, 4, 16
+FPS, SUB, DUR = 60, 4, 18
 
 
 def open_page(p):
@@ -28,7 +28,7 @@ def open_page(p):
 
 def stills():
     PREV.mkdir(exist_ok=True)
-    times = [1.2, 4.3, 6.9, 9.4, 11.9, 14.5, 15.6, 0.0, 15.996]
+    times = [1.2, 4.3, 7.2, 9.8, 12.5, 15.6, 16.3, 17.3, 0.0, 17.996]
     with sync_playwright() if False else _pw() as p:
         browser, page = open_page(p)
         for t in times:

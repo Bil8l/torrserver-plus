@@ -4,6 +4,8 @@
 
 A browser userscript that sits on top of the original TorrServer web UI and leaves it untouched. Everything the original does keeps working exactly as before. TorrServer ++ adds faster paths for the two things you do most: start watching without opening each torrent, and copy a link straight from the card grid.
 
+![TorrServer ++ in motion](media/promo-loop.gif)
+
 ![The TorrServer window with the additions highlighted](media/ui-map.png)
 
 ## Left click or right click?

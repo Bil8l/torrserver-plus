@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TorrServer ++ promo loop</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #212324; }
+  .stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  svg#world { position: absolute; inset: 0; width: 1920px; height: 1080px; display: block; }
+  .chrome { position: absolute; inset: 0; pointer-events: none; font-family: 'Geist', sans-serif; }
+  #cap0, #cap1 { position: absolute; left: 64px; bottom: 40px; will-change: auto; }
+  #cap1 { z-index: 1; } #cap0 { z-index: 2; }
+  .cap-eyebrow { font-family: 'Geist Mono', monospace; font-size: 15px; font-weight: 500; letter-spacing: 0.22em; color: #7be3c3; margin-bottom: 10px; }
+  .cap-text { font-family: 'Instrument Serif', serif; font-size: 44px; letter-spacing: 0.045em; color: #f1eff3; }
+  #cur { position: absolute; left: 0; top: 0; z-index: 10; }
+  .ring { position: absolute; border-radius: 50%; z-index: 9; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <svg id="world" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="promo-title promo-desc">
+    <title id="promo-title">TorrServer ++ promotional loop</title>
+    <desc id="promo-desc">A looping product video: a cursor demonstrates the TorrServer ++ userscript copying playlist and episode links, adding a torrent from a clipboard hash, and opening a stream in mpv.</desc>
+    <rect x="-2000" y="-2000" width="6000" height="5000" fill="#212324"/>
+
+    <!-- app window -->
+    <rect x="48" y="40" width="1824" height="1000" rx="12" fill="#323637" stroke="rgba(241,239,243,0.25)" stroke-width="1.5"/>
+    <line x1="400" y1="40" x2="400" y2="1040" stroke="rgba(241,239,243,0.12)" stroke-width="1.5"/>
+    <text x="72" y="116" font-family="'Geist Mono', monospace" font-size="14" letter-spacing="0.18em" fill="#8a949a">TORRSERVER</text>
+
+    <!-- sidebar -->
+    <g font-family="'Geist', sans-serif" font-size="20" font-weight="600">
+      <rect x="88" y="152" width="264" height="64" rx="8" fill="rgba(241,239,243,0.03)"/>
+      <line x1="112" y1="180" x2="128" y2="180" stroke="#8a949a" stroke-width="2"/>
+      <line x1="112" y1="188" x2="128" y2="188" stroke="#8a949a" stroke-width="2"/>
+      <line x1="112" y1="196" x2="128" y2="196" stroke="#8a949a" stroke-width="2"/>
+      <text x="148" y="192" fill="#a9b2b7">Torrents</text>
+
+      <rect x="88" y="232" width="264" height="64" rx="8" fill="rgba(241,239,243,0.03)"/>
+      <line x1="112" y1="264" x2="128" y2="264" stroke="#8a949a" stroke-width="2"/>
+      <line x1="120" y1="256" x2="120" y2="272" stroke="#8a949a" stroke-width="2"/>
+      <text x="148" y="272" fill="#a9b2b7">Add torrent</text>
+
+      <rect id="qaRow" x="88" y="312" width="264" height="64" rx="8" fill="rgba(123,227,195,0.10)" stroke="rgba(123,227,195,0.35)" stroke-width="1.5"/>
+      <path d="M124 330 L114 348 L120 348 L117 358 L128 342 L122 342 Z" fill="#7be3c3"/>
+      <text x="148" y="352" fill="#7be3c3">Quick add</text>
+
+      <rect x="88" y="392" width="264" height="64" rx="8" fill="rgba(241,239,243,0.03)"/>
+      <circle cx="120" cy="422" r="7" fill="none" stroke="#8a949a" stroke-width="2"/>
+      <line x1="125" y1="427" x2="131" y2="433" stroke="#8a949a" stroke-width="2"/>
+      <text x="148" y="432" fill="#a9b2b7">Search</text>
+
+      <rect x="88" y="472" width="264" height="64" rx="8" fill="rgba(241,239,243,0.03)"/>
+      <line x1="112" y1="500" x2="128" y2="500" stroke="#8a949a" stroke-width="2"/>
+      <line x1="112" y1="510" x2="128" y2="510" stroke="#8a949a" stroke-width="2"/>
+      <circle cx="116" cy="500" r="2.5" fill="#8a949a"/>
+      <circle cx="124" cy="510" r="2.5" fill="#8a949a"/>
+      <text x="148" y="512" fill="#a9b2b7">Settings</text>
+    </g>
+
+    <text x="456" y="140" font-family="'Geist', sans-serif" font-size="26" font-weight="600" fill="#f1eff3">Torrents</text>
+
+    <!-- card 1 -->
+    <rect x="456" y="176" width="1392" height="340" rx="10" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.12)" stroke-width="1.5"/>
+    <rect x="488" y="208" width="176" height="276" rx="8" fill="rgba(241,239,243,0.06)" stroke="rgba(241,239,243,0.15)" stroke-width="1.5"/>
+    <circle cx="546" cy="268" r="11" fill="none" stroke="#8a949a" stroke-width="2"/>
+    <path d="M502 452 L550 380 L584 422 L602 398 L646 452" fill="none" stroke="#8a949a" stroke-width="2"/>
+    <text x="704" y="256" font-family="'Geist', sans-serif" font-size="24" font-weight="600" fill="#f1eff3">Example Show S01 (2024) [1080p]</text>
+    <text x="704" y="292" font-family="'Geist Mono', monospace" font-size="15" fill="#8a949a">2.4 GB · 12 files · 34 seeds</text>
+    <rect x="704" y="316" width="560" height="6" rx="3" fill="rgba(241,239,243,0.08)"/>
+    <rect x="704" y="316" width="224" height="6" rx="3" fill="rgba(123,227,195,0.55)"/>
+
+    <g font-family="'Geist', sans-serif" font-size="20" font-weight="600" text-anchor="middle">
+      <rect x="704" y="376" width="132" height="72" rx="8" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.35)" stroke-width="1.5"/>
+      <text x="770" y="420" fill="#f1eff3">Details</text>
+      <rect x="852" y="376" width="108" height="72" rx="8" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.35)" stroke-width="1.5"/>
+      <text x="906" y="420" fill="#f1eff3">Play</text>
+      <rect x="976" y="376" width="168" height="72" rx="8" fill="#7be3c3"/>
+      <text id="copyA" x="1060" y="420" fill="#1a1a1a">Copy link</text>
+      <text id="copyB" x="1060" y="420" fill="#1a1a1a" opacity="0">Copied!</text>
+      <rect x="1160" y="376" width="120" height="72" rx="8" fill="#571358" stroke="rgba(201,131,205,0.6)" stroke-width="1.5"/>
+      <text x="1220" y="420" fill="#f1eff3">MPV</text>
+      <rect x="1296" y="376" width="108" height="72" rx="8" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.35)" stroke-width="1.5"/>
+      <text x="1350" y="420" fill="#a9b2b7">Drop</text>
+      <rect x="1420" y="376" width="120" height="72" rx="8" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.35)" stroke-width="1.5"/>
+      <text x="1480" y="420" fill="#a9b2b7">Delete</text>
+    </g>
+    <text x="1128" y="492" font-family="'Geist Mono', monospace" font-size="13" letter-spacing="0.06em" fill="#8a949a" text-anchor="middle">LEFT CLICK: PLAYLIST · RIGHT CLICK: ONE EPISODE</text>
+
+    <!-- card 2 (the torrent added earlier, still unnamed until Quick add fixes it) -->
+    <rect x="456" y="560" width="1392" height="340" rx="10" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.12)" stroke-width="1.5"/>
+    <rect x="488" y="592" width="176" height="276" rx="8" fill="rgba(241,239,243,0.06)" stroke="rgba(241,239,243,0.15)" stroke-width="1.5"/>
+    <text id="c2hashGlyph" x="576" y="748" font-family="'Geist Mono', monospace" font-size="52" fill="#8a949a" text-anchor="middle">#</text>
+    <g id="c2mintPoster" opacity="0">
+      <rect x="488" y="592" width="176" height="276" rx="8" fill="rgba(123,227,195,0.12)" stroke="rgba(123,227,195,0.35)" stroke-width="1.5"/>
+      <circle cx="546" cy="652" r="11" fill="none" stroke="#7be3c3" stroke-width="2"/>
+      <path d="M502 836 L550 764 L584 806 L602 782 L646 836" fill="none" stroke="#7be3c3" stroke-width="2"/>
+    </g>
+    <g id="c2titleA">
+      <text x="704" y="644" font-family="'Geist Mono', monospace" font-size="20" fill="#a9b2b7">a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0</text>
+      <text x="704" y="680" font-family="'Geist Mono', monospace" font-size="15" fill="#8a949a">4.7 GB · 1 file · fetching metadata…</text>
+    </g>
+    <g id="c2titleB" opacity="0">
+      <text x="704" y="644" font-family="'Geist', sans-serif" font-size="24" font-weight="600" fill="#f1eff3">Example Movie (2024) [1080p]</text>
+      <text x="704" y="680" font-family="'Geist Mono', monospace" font-size="15" fill="#8a949a">1.4 GB · 1 file · 12 seeds</text>
+    </g>
+    <rect x="704" y="700" width="560" height="6" rx="3" fill="rgba(241,239,243,0.08)"/>
+    <rect id="c2prog" x="704" y="700" width="8" height="6" rx="3" fill="#7be3c3" opacity="0.3"/>
+
+    <!-- floating quick add button -->
+    <circle cx="1772" cy="968" r="44" fill="#7be3c3"/>
+    <line x1="1754" y1="968" x2="1790" y2="968" stroke="#1a1a1a" stroke-width="4"/>
+    <line x1="1772" y1="950" x2="1772" y2="986" stroke="#1a1a1a" stroke-width="4"/>
+    <circle id="fabBadge" cx="1800" cy="932" r="13" fill="#f1eff3" stroke="#323637" stroke-width="3" opacity="0"/>
+
+    <!-- episode picker -->
+    <g id="picker" opacity="0">
+      <rect x="976" y="472" width="420" height="256" rx="10" fill="#323637" stroke="rgba(241,239,243,0.30)" stroke-width="1.5"/>
+      <rect id="pickHi" x="984" y="480" width="404" height="48" rx="6" fill="rgba(123,227,195,0.14)"/>
+      <g font-family="'Geist', sans-serif" font-size="18" font-weight="600" fill="#f1eff3">
+        <text x="1000" y="511">Episode 1</text>
+        <text x="1000" y="567">Episode 2</text>
+        <text id="ep3text" x="1000" y="623">Episode 3</text>
+        <text x="1000" y="679">Episode 4</text>
+      </g>
+      <g font-family="'Geist Mono', monospace" font-size="14" fill="#8a949a" text-anchor="end">
+        <text x="1388" y="511">1.1 GB</text>
+        <text x="1388" y="567">1.0 GB</text>
+        <text x="1388" y="623">1.1 GB</text>
+        <text x="1388" y="679">0.9 GB</text>
+      </g>
+      <path id="ep3check" d="M1330 616 L1338 624 L1352 608" fill="none" stroke="#7be3c3" stroke-width="3" opacity="0"/>
+    </g>
+
+    <!-- quick add dialog -->
+    <g id="dlg" opacity="0">
+      <rect x="960" y="140" width="800" height="560" rx="12" fill="#323637" stroke="rgba(241,239,243,0.30)" stroke-width="1.5"/>
+      <text x="1000" y="196" font-family="'Geist Mono', monospace" font-size="16" letter-spacing="0.14em" fill="#f1eff3">QUICK ADD · HASH TO MAGNET</text>
+      <rect x="1000" y="220" width="720" height="150" rx="8" fill="rgba(241,239,243,0.06)" stroke="rgba(241,239,243,0.20)" stroke-width="1.5"/>
+      <text id="dlgText" x="1020" y="304" font-family="'Geist Mono', monospace" font-size="17" fill="#f1eff3"></text>
+      <rect id="dlgCaret" x="1020" y="282" width="2" height="26" fill="#7be3c3"/>
+      <text id="dlgInfo" x="1000" y="416" font-family="'Geist Mono', monospace" font-size="14" letter-spacing="0.08em" fill="#8a949a" opacity="0">1 TORRENT DETECTED · A1B2C3D4E5F6</text>
+      <rect x="1000" y="470" width="64" height="32" rx="16" fill="rgba(241,239,243,0.08)"/>
+      <rect id="tglFill" x="1000" y="470" width="0" height="32" rx="16" fill="rgba(123,227,195,0.45)"/>
+      <circle id="tglKnob" cx="1016" cy="486" r="12" fill="#f1eff3" stroke="#323637" stroke-width="3"/>
+      <text id="tglLabel" x="1080" y="494" font-family="'Geist', sans-serif" font-size="17" font-weight="600" fill="#a9b2b7">AUTO: CLEAN NAME &amp; FETCH COVER</text>
+      <g font-family="'Geist', sans-serif" font-size="17" font-weight="600" text-anchor="middle">
+        <rect x="1000" y="590" width="180" height="60" rx="8" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.20)" stroke-width="1.5"/>
+        <text x="1090" y="628" fill="#8a949a">Paste</text>
+        <rect x="1200" y="590" width="160" height="60" rx="8" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.20)" stroke-width="1.5"/>
+        <text x="1280" y="628" fill="#8a949a">Clear</text>
+        <rect x="1380" y="590" width="160" height="60" rx="8" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.20)" stroke-width="1.5"/>
+        <text x="1460" y="628" fill="#8a949a">Cancel</text>
+        <rect x="1560" y="590" width="160" height="60" rx="8" fill="#7be3c3"/>
+        <rect id="addFlash" x="1560" y="590" width="160" height="60" rx="8" fill="#ffffff" opacity="0"/>
+        <text x="1640" y="628" fill="#1a1a1a">Add</text>
+      </g>
+    </g>
+
+    <!-- toast -->
+    <g id="toast" opacity="0">
+      <rect x="1216" y="916" width="380" height="60" rx="8" fill="#7be3c3"/>
+      <path d="M1244 946 L1252 954 L1266 938" fill="none" stroke="#1a1a1a" stroke-width="3"/>
+      <text x="1284" y="953" font-family="'Geist Mono', monospace" font-size="16" letter-spacing="0.06em" fill="#1a1a1a">ADDED: NAMED AND COVERED</text>
+    </g>
+
+    <!-- mpv player mock -->
+    <g id="player" opacity="0">
+      <rect x="1180" y="560" width="676" height="440" rx="12" fill="#1d1f20" stroke="rgba(241,239,243,0.30)" stroke-width="1.5"/>
+      <text x="1212" y="612" font-family="'Geist', sans-serif" font-size="20" font-weight="600" fill="#f1eff3">Example Show S01E03</text>
+      <circle id="liveDot" cx="1756" cy="605" r="5" fill="#7be3c3"/>
+      <text x="1770" y="611" font-family="'Geist Mono', monospace" font-size="14" letter-spacing="0.10em" fill="#7be3c3">STREAMING</text>
+      <rect x="1212" y="640" width="612" height="220" rx="8" fill="rgba(241,239,243,0.04)" stroke="rgba(241,239,243,0.08)" stroke-width="1"/>
+      <g fill="#7be3c3" opacity="0.85">
+        <rect id="eq0" x="1456" y="764" width="12" height="36" rx="3"/>
+        <rect id="eq1" x="1484" y="764" width="12" height="36" rx="3"/>
+        <rect id="eq2" x="1512" y="764" width="12" height="36" rx="3"/>
+        <rect id="eq3" x="1540" y="764" width="12" height="36" rx="3"/>
+        <rect id="eq4" x="1568" y="764" width="12" height="36" rx="3"/>
+      </g>
+      <rect x="1240" y="916" width="520" height="8" rx="4" fill="rgba(241,239,243,0.15)"/>
+      <rect id="playFill" x="1240" y="916" width="156" height="8" rx="4" fill="#7be3c3"/>
+      <circle id="playKnob" cx="1396" cy="920" r="11" fill="#f1eff3" stroke="#323637" stroke-width="3"/>
+      <text id="playTime" x="1240" y="978" font-family="'Geist Mono', monospace" font-size="14" fill="#8a949a">07:20 / 24:31</text>
+      <text x="1824" y="978" font-family="'Geist Mono', monospace" font-size="12" fill="#8a949a" text-anchor="end">MPV · MPV-HANDLER</text>
+    </g>
+  </svg>
+
+  <div class="chrome">
+    <div id="cap1"></div>
+    <div id="cap0"></div>
+    <div id="cur">
+      <svg width="30" height="36" viewBox="0 0 30 36">
+        <path d="M3 2 L3 28 L10.5 21.5 L15.5 33 L20 31 L15 19.5 L24.5 19.5 Z" fill="#f1eff3" stroke="#1a1a1a" stroke-width="1.6"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict'
+  const P = 12
+  const $ = id => document.getElementById(id)
+  const world = $('world')
+  const NS = 'http://www.w3.org/2000/svg'
+
+  // closed-form underdamped spring step: 0 -> 1, settles to 1
+  function S (u, w, z) {
+    if (u <= 0) return 0
+    if (u > 4 / w) return 1
+    const wd = w * Math.sqrt(1 - z * z)
+    return 1 - Math.exp(-z * w * u) * (Math.cos(wd * u) + (z * w / wd) * Math.sin(wd * u))
+  }
+  // in-cycle chain: value sits at keys[i-1] until keys[i] fires, then springs
+  function chain (t, keys) {
+    let v = keys[0][1]
+    for (let i = 1; i < keys.length; i++) {
+      if (t >= keys[i][0]) v += (keys[i][1] - keys[i - 1][1]) * S(t - keys[i][0], keys[i][2] || 14, keys[i][3] || 0.68)
+    }
+    return v
+  }
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v))
+  const smooth = u => { u = clamp(u, 0, 1); return u * u * (3 - 2 * u) }
+  const easeOutC = u => { u = clamp(u, 0, 1); return 1 - Math.pow(1 - u, 3) }
+
+  // camera: cx, cy, view width  (w of destination leg carries its own spring)
+  const CAM = [
+    [0.00, 960, 540, 1920, 8],
+    [2.00, 1060, 400, 720, 8],
+    [4.20, 1080, 490, 940, 8],
+    [6.05, 1480, 830, 1000, 8],
+    [7.06, 1360, 420, 1020, 9],
+    [9.10, 1100, 730, 1320, 8],
+    [10.00, 1220, 412, 900, 9],
+    [10.55, 1518, 780, 840, 10],
+    [11.30, 960, 540, 1920, 11]
+  ]
+  function camAt (t) {
+    const out = [960, 540, 1920]
+    for (let i = 1; i < CAM.length; i++) {
+      if (t >= CAM[i][0]) {
+        const s = S(t - CAM[i][0], CAM[i][4], 0.82)
+        for (let k = 0; k < 3; k++) out[k] += (CAM[i][k + 1] - CAM[i - 1][k + 1]) * s
+      }
+    }
+    return out
+  }
+
+  // cursor path (world coords), non-uniform Catmull-Rom through keyframes, wraps at P
+  const KEYS = [
+    [0.00, -80, 1150], [1.20, 700, 700], [2.20, 1092, 430], [2.60, 1092, 434],
+    [3.90, 1092, 434], [4.15, 1092, 434], [4.85, 1186, 504], [5.35, 1186, 616],
+    [5.65, 1186, 616], [6.35, 1186, 616], [6.90, 1772, 968], [7.00, 1772, 968],
+    [7.80, 1500, 560], [8.25, 1016, 486], [8.30, 1016, 486], [8.75, 1640, 620],
+    [8.90, 1640, 620], [9.45, 1150, 745], [10.30, 1220, 412], [10.45, 1220, 412],
+    [10.90, 1396, 920], [10.95, 1396, 920], [11.22, 1542, 920], [11.25, 1542, 920],
+    [11.92, -80, 1150], [12.00, -80, 1150]
+  ]
+  function cursorAt (t) {
+    const K = KEYS
+    let i = K.length - 2
+    for (let j = 0; j < K.length - 1; j++) { if (t >= K[j][0] && t <= K[j + 1][0]) { i = j; break } }
+    const p0 = K[Math.max(0, i - 1)], p1 = K[i], p2 = K[i + 1], p3 = K[Math.min(K.length - 1, i + 2)]
+    const dt = p2[0] - p1[0] || 1
+    const u = clamp((t - p1[0]) / dt, 0, 1)
+    const out = []
+    for (let k = 1; k <= 2; k++) {
+      const m1 = k === 1 ? (p2[k] - p0[k]) / ((p2[0] - p0[0]) || 1) : 0
+      const m2 = k === 2 ? (p3[k] - p1[k]) / ((p3[0] - p1[0]) || 1) : 0
+      const v1 = p1[k], v2 = p2[k]
+      out.push((2 * Math.pow(u, 3) - 3 * u * u + 1) * v1 + (Math.pow(u, 3) - 2 * u * u + u) * dt * m1 +
+               (-2 * Math.pow(u, 3) + 3 * u * u) * v2 + (Math.pow(u, 3) - u * u) * dt * m2)
+    }
+    return out
+  }
+
+  const PRESSES = [[2.6, 0.12], [4.15, 0.12], [5.65, 0.12], [7.0, 0.12], [8.3, 0.12], [8.9, 0.12], [10.45, 0.12], [10.95, 0.30]]
+  const RIPPLES = [
+    [2.6, 1060, 412, '#7be3c3'], [4.15, 1060, 412, '#c983cd'], [5.65, 1186, 616, '#7be3c3'],
+    [7.0, 1772, 968, '#7be3c3'], [8.3, 1016, 486, '#7be3c3'], [8.9, 1640, 620, '#7be3c3'],
+    [10.45, 1220, 412, '#c983cd'], [10.95, 1396, 920, '#7be3c3']
+  ]
+  const ringEls = RIPPLES.map(() => {
+    const c = document.createElementNS(NS, 'circle')
+    c.setAttribute('fill', 'none'); c.setAttribute('stroke-width', '3')
+    world.appendChild(c)
+    return c
+  })
+
+  const HASH = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0'
+  const CAPS = [
+    ['01 / 06 · TORRSERVER ++', 'TORRSERVER ++'],
+    ['02 / 06 · TORRSERVER ++', 'LEFT CLICK: THE WHOLE PLAYLIST'],
+    ['03 / 06 · TORRSERVER ++', 'RIGHT CLICK: ONE EPISODE'],
+    ['04 / 06 · TORRSERVER ++', 'THE BADGE KNOWS YOUR CLIPBOARD'],
+    ['05 / 06 · TORRSERVER ++', 'ADDED: NAMED AND COVERED'],
+    ['06 / 06 · TORRSERVER ++', 'STRAIGHT TO MPV']
+  ]
+  const capEls = [$('cap0'), $('cap1')]
+  function renderCap (el, i, vis, enterS, exitS) {
+    if (vis <= 0.005) { el.style.opacity = '0'; return }
+    el.innerHTML = '<div class="cap-eyebrow">' + CAPS[i][0] + '</div><div class="cap-text">' + CAPS[i][1] + '</div>'
+    el.style.opacity = vis
+    el.style.filter = 'blur(' + Math.max(0, 9 * (1 - vis)).toFixed(2) + 'px)'
+    el.style.transform = 'translateY(' + (16 * (1 - enterS) - 12 * (1 - exitS)).toFixed(2) + 'px)'
+  }
+
+  const fmt = s => { s = Math.round(s); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2) }
+
+  function seek (tRaw) {
+    const t = ((tRaw % P) + P) % P
+
+    // camera
+    const [cx, cy, cw] = camAt(t)
+    const vh = cw * 1080 / 1920
+    const vx = cx - cw / 2, vy = cy - vh / 2
+    world.setAttribute('viewBox', vx + ' ' + vy + ' ' + cw + ' ' + vh)
+    const kScreen = cw / 1920
+    const w2s = wx => (wx - vx) / kScreen
+    const w2sy = wy => (wy - vy) / kScreen
+
+    // copy link label swap
+    const ls = chain(t, [[0, 0], [2.6, 1], [3.15, 0], [5.7, 1], [6.3, 0]], )
+    const lblBlur = Math.max(0, 6 * Math.min(ls, 1 - ls) * kScreen).toFixed(2)
+    $('copyA').setAttribute('opacity', (1 - ls).toFixed(3))
+    $('copyA').style.filter = 'blur(' + lblBlur + 'px)'
+    $('copyB').setAttribute('opacity', ls.toFixed(3))
+    $('copyB').style.filter = 'blur(' + lblBlur + 'px)'
+
+    // episode picker
+    const ms = chain(t, [[0, 0], [4.2, 1, 16, 0.62], [5.78, 0, 16, 0.62]])
+    const pick = $('picker')
+    pick.setAttribute('opacity', Math.min(1, ms * 1.8).toFixed(3))
+    pick.setAttribute('transform', 'translate(976 472) scale(' + (0.9 + 0.1 * ms).toFixed(4) + ') translate(-976 -472)')
+    const hiTop = chain(t, [[0, 480], [4.9, 480, 17, 0.7], [5.35, 592, 17, 0.7]])
+    const hiBot = chain(t, [[0, 528], [4.9, 528, 10, 0.7], [5.35, 640, 10, 0.7]])
+    const hi = $('pickHi')
+    hi.setAttribute('y', hiTop.toFixed(2)); hi.setAttribute('height', Math.max(0, hiBot - hiTop).toFixed(2))
+    hi.setAttribute('opacity', (ms * chain(t, [[0, 0], [4.9, 1, 14, 0.8]])).toFixed(3))
+    $('ep3check').setAttribute('opacity', chain(t, [[0, 0], [5.68, 1, 16, 0.8]]).toFixed(3))
+    $('ep3text').setAttribute('fill', t >= 5.68 && t < 8 ? '#7be3c3' : '#f1eff3')
+
+    // fab badge
+    const bs = chain(t, [[0, 0], [6.4, 1, 18, 0.55], [11.32, 0, 16, 0.7]])
+    const fb = $('fabBadge')
+    fb.setAttribute('opacity', Math.min(1, bs * 2).toFixed(3))
+    fb.setAttribute('transform', 'translate(1800 932) scale(' + Math.max(0.001, bs).toFixed(4) + ') translate(-1800 -932)')
+
+    // quick add dialog
+    const ds = chain(t, [[0, 0], [7.25, 1, 15, 0.62], [8.98, 0, 15, 0.62]])
+    const dlg = $('dlg')
+    dlg.setAttribute('opacity', Math.min(1, ds * 1.8).toFixed(3))
+    dlg.setAttribute('transform', 'translate(1360 420) scale(' + (0.90 + 0.10 * ds).toFixed(4) + ') translate(-1360 -420)')
+    const rev = smooth((t - 7.45) / 0.6)
+    const nch = Math.round(HASH.length * rev)
+    $('dlgText').textContent = HASH.slice(0, nch)
+    const caret = $('dlgCaret')
+    caret.setAttribute('x', (1020 + 3 + nch * 10.54).toFixed(1))
+    caret.setAttribute('opacity', (ds > 0.5 && t < 8.9 ? (Math.sin(2 * Math.PI * 2.2 * t) > 0 ? 1 : 0.15) : 0).toFixed(2))
+    $('dlgInfo').setAttribute('opacity', chain(t, [[0, 0], [8.1, 1, 14, 0.8], [8.98, 0, 14, 0.8]]).toFixed(3))
+    // auto toggle: knob rides a fast spring, track fill lags on a slow one
+    const kon = chain(t, [[0, 0], [8.3, 1, 19, 0.6]])
+    const kfill = chain(t, [[0, 0], [8.3, 1, 11, 0.7]])
+    $('tglKnob').setAttribute('cx', (1016 + 32 * kon).toFixed(2))
+    $('tglFill').setAttribute('width', (64 * kfill).toFixed(2))
+    $('tglLabel').setAttribute('fill', kfill > 0.5 ? '#f1eff3' : '#a9b2b7')
+    $('addFlash').setAttribute('opacity', (0.35 * chain(t, [[0, 0], [8.9, 1, 30, 1], [9.02, 0, 30, 1]])).toFixed(3))
+
+    // toast
+    const ts = chain(t, [[0, 0], [9.15, 1, 14, 0.7], [11.42, 0, 14, 0.7]])
+    const toast = $('toast')
+    toast.setAttribute('opacity', Math.min(1, ts * 1.6).toFixed(3))
+    toast.setAttribute('transform', 'translate(' + (240 * (1 - ts)).toFixed(2) + ' 0)')
+
+    // card 2 rename swap
+    const s2 = chain(t, [[0, 0], [9.55, 1, 18, 1], [11.38, 0, 18, 1]])
+    const blur2 = Math.max(0, 8 * Math.min(s2, 1 - s2) * kScreen).toFixed(2)
+    $('c2titleA').setAttribute('opacity', (1 - s2).toFixed(3))
+    $('c2titleA').style.filter = 'blur(' + blur2 + 'px)'
+    $('c2titleB').setAttribute('opacity', s2.toFixed(3))
+    $('c2titleB').style.filter = 'blur(' + blur2 + 'px)'
+    $('c2hashGlyph').setAttribute('opacity', (1 - s2).toFixed(3))
+    const mp = $('c2mintPoster')
+    mp.setAttribute('opacity', s2.toFixed(3))
+    mp.setAttribute('transform', 'translate(576 730) scale(' + (0.94 + 0.06 * s2).toFixed(4) + ') translate(-576 -730)')
+    $('c2prog').setAttribute('width', (8 + 332 * s2).toFixed(1))
+    $('c2prog').setAttribute('opacity', (0.3 + 0.45 * s2).toFixed(2))
+
+    // player
+    const ps = chain(t, [[0, 0], [10.45, 1, 15, 0.6], [11.32, 0, 15, 0.6]])
+    const pl = $('player')
+    pl.setAttribute('opacity', Math.min(1, ps * 1.6).toFixed(3))
+    pl.setAttribute('transform', 'translate(' + (560 * (1 - ps)).toFixed(2) + ' 0)')
+    let val
+    const cur = cursorAt(t)
+    if (t >= 10.95 && t < 11.25) val = clamp((cur[0] - 1240) / 520, 0.30, 0.9)
+    else if (t >= 11.25) val = Math.min(0.9, 0.581 + 0.05 * (t - 11.25))
+    else val = 0.30 + 0.04 * Math.max(0, t - 10.5)
+    $('playFill').setAttribute('width', (520 * val).toFixed(1))
+    $('playKnob').setAttribute('cx', (1240 + 520 * val).toFixed(1))
+    $('playTime').textContent = fmt(val * 1471) + ' / 24:31'
+    for (let i = 0; i < 5; i++) {
+      const h = 12 + 26 * (0.5 + 0.5 * Math.sin(3.1 * t + i * 1.3))
+      $('eq' + i).setAttribute('height', h.toFixed(1))
+      $('eq' + i).setAttribute('y', (800 - h).toFixed(1))
+    }
+    $('liveDot').setAttribute('opacity', (0.4 + 0.6 * (0.5 + 0.5 * Math.sin(2 * Math.PI * 1.2 * t))).toFixed(2))
+
+    // click ripples (world layer, radius compensated for zoom)
+    RIPPLES.forEach((r, i) => {
+      const age = t - r[0]
+      const el = ringEls[i]
+      if (age < 0 || age > 0.5) { el.setAttribute('opacity', '0'); return }
+      el.setAttribute('cx', r[1]); el.setAttribute('cy', r[2])
+      el.setAttribute('r', (14 + 70 * easeOutC(age / 0.45) * kScreen).toFixed(1))
+      el.setAttribute('stroke', r[3])
+      el.setAttribute('opacity', (0.8 * (1 - age / 0.45)).toFixed(2))
+    })
+
+    // screen chrome: captions + cursor
+    let idx = t >= 11.6 ? 0 : Math.min(5, Math.floor(t / 2))
+    const prev = idx === 0 ? (t >= 11.6 ? 5 : 0) : idx - 1
+    const enterAge = i => i === 0 ? t + 0.45 : t - 2 * i
+    const exitStart = i => i === 5 ? 11.45 : 1.9 + 2 * i
+    function capVis (i) {
+      const sin = S(enterAge(i), 14, 0.68)
+      const dtOut = exitStart(i) - t + (i === 0 && t >= 11.6 ? 12 : 0)
+      const sout = S(dtOut, 22, 1)
+      return [sin * sout, sin, sout]
+    }
+    const [vNew, eN, xN] = capVis(idx)
+    const [vOld, eO, xO] = capVis(prev)
+    renderCap(capEls[0], idx, vNew, eN, xN)
+    renderCap(capEls[1], prev, prev === idx ? 0 : vOld, eO, xO)
+
+    let press = 0
+    for (const p of PRESSES) press = Math.max(press, chain(t, [[0, 0], [p[0], 1, 30, 1], [p[0] + p[1], 0, 30, 1]]))
+    const sx = w2s(cur[0]), sy = w2sy(cur[1])
+    $('cur').style.transform = 'translate(' + (sx - 3).toFixed(1) + 'px,' + (sy - 2).toFixed(1) + 'px) scale(' + (1 - 0.18 * press).toFixed(3) + ')'
+    $('cur').style.transformOrigin = '3px 2px'
+  }
+
+  window.seek = seek
+  seek(0)
+  if (new URLSearchParams(location.search).has('play')) {
+    const t0 = performance.now()
+    const loop = () => { seek((performance.now() - t0) / 1000); requestAnimationFrame(loop) }
+    requestAnimationFrame(loop)
+  }
+})()
+</script>
+</body>
+</html>

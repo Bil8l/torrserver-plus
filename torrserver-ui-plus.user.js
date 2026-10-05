@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name         TorrServer ++
 // @namespace    torrserver-ui-plus
-// @version      1.0.1
+// @version      1.0.2
 // @description  Adds Copy link and MPV buttons to every torrent card (left click: playlist, right click: pick an episode), plus per-file MPV in the details dialog, and Quick add: paste info hashes or magnets, trackers are appended and they go straight to your server, with optional clean-name and cover lookup (TMDB, AniList, iTunes). A floating + button lights up when the clipboard holds a hash or magnet. Clipboard is read locally only. MPV playback needs mpv-handler installed.
 // @license      MIT
+// @homepageURL  https://github.com/Bil8l/torrserver-plus
+// @supportURL   https://github.com/Bil8l/torrserver-plus/issues
 // @match        http://localhost:8090/*
 // @match        https://localhost:8090/*
 // @match        http://127.0.0.1:8090/*

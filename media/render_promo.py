@@ -11,7 +11,7 @@ MEDIA = pathlib.Path(__file__).resolve().parent
 HTML = MEDIA / 'promo-loop.html'
 TMP = MEDIA / 'render_tmp'
 PREV = MEDIA / 'render_preview'
-FPS, SUB, DUR = 60, 4, 12
+FPS, SUB, DUR = 60, 4, 16
 
 
 def open_page(p):
@@ -28,7 +28,7 @@ def open_page(p):
 
 def stills():
     PREV.mkdir(exist_ok=True)
-    times = [1.0, 3.0, 5.2, 7.5, 9.8, 11.15, 0.0, 11.996]
+    times = [1.2, 4.3, 6.9, 9.4, 11.9, 14.5, 15.6, 0.0, 15.996]
     with sync_playwright() if False else _pw() as p:
         browser, page = open_page(p)
         for t in times:
@@ -63,7 +63,7 @@ def encode():
     gif = MEDIA / 'promo-loop.gif'
     subprocess.run([
         'ffmpeg', '-y', '-i', str(mp4),
-        '-vf', ('fps=30,scale=960:540:flags=lanczos,split[a][b];'
+        '-vf', ('fps=24,scale=960:540:flags=lanczos,split[a][b];'
                 '[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle'),
         '-loop', '0', str(gif)
     ], check=True)

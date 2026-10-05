@@ -11,7 +11,7 @@ Browser userscript for the TorrServer web UI (tested with MatriX). It adds a few
 ## Install
 
 1. Install [Tampermonkey](https://www.tampermonkey.net/) (Chrome, Edge) or [Violentmonkey](https://violentmonkey.github.io/) (Firefox).
-2. Install the script from Greasy Fork: `PASTE GREASYFORK LINK HERE`, or from the `.user.js` file in this repository.
+2. Install the script from Greasy Fork: https://greasyfork.org/en/scripts/598825-torrserver, or from the `.user.js` file in this repository.
 3. Open your TorrServer page. The script activates once the UI loads.
 
 The script matches `localhost:8090` and any other host on port `8090`. If your server runs on a different port, edit the `@match` lines at the top of the script.

@@ -64,7 +64,7 @@ def encode():
     subprocess.run([
         'ffmpeg', '-y', '-i', str(mp4),
         '-vf', ('fps=30,scale=960:540:flags=lanczos,split[a][b];'
-                '[a]palettegen=stat_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle'),
+                '[a]palettegen=stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle'),
         '-loop', '0', str(gif)
     ], check=True)
     print('encoded', mp4.name, gif.name)

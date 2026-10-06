@@ -2,7 +2,7 @@
 
 ![TorrServer ++](media/banner-og.png)
 
-A browser userscript that sits on top of the original [TorrServer web UI](https://github.com/yourok/torrserver) and leaves it untouched. Everything the original does keeps working exactly as before. TorrServer ++ adds faster paths for the two things you do most: start watching without opening each torrent, and copy a link straight from the card grid.
+A browser userscript that sits on top of the original [TorrServer web UI](https://github.com/yourok/torrserver) and leaves it untouched. Everything the original does keeps working exactly as before. TorrServer ++ adds faster paths for the three things you do most: add a torrent with one click, start watching without opening each torrent, and copy a link straight from the card grid.
 
 ![TorrServer ++ in motion](media/promo-loop.gif)
 
@@ -28,9 +28,9 @@ The script matches `localhost:8090` and any other host on port `8090`. If your s
 
 ## Quick add
 
-Paste any text containing info hashes or `magnet:` links. Duplicates are removed, trackers are appended, and the torrents go straight to your server. With "Auto: clean name & fetch cover" checked, the script waits for metadata, renames the torrent in the app's card format, and picks the best cover it can find. Auto mode also repairs torrents that are already on the server.
+Paste any text containing info hashes, `magnet:` links or `.torrent` file links. The floating Paste-add button above Quick add skips the dialog entirely: one click reads the clipboard and drops the torrent straight onto the server, and it lights up whenever the clipboard holds something it can add. Duplicates are detected, trackers are appended, and everything goes straight to your server. With "Auto: clean name & fetch cover" checked, the script waits for metadata, renames the torrent in the app's card format, and picks the best cover it can find. Auto mode also repairs torrents that are already on the server — re-paste a hash and its name and cover get refreshed.
 
-Cover sources, in order: TMDB (only if your server has a TMDB API key configured), AniList, iTunes Search.
+Cover sources, in order: TMDB (only if your server has a TMDB API key configured), IMDb, AniList, TVMaze, iTunes, Deezer, Wikipedia. Lookups send the cleaned title only, and they are sent without cookies so they cannot be linked to any account you are signed in to.
 
 ## MPV playback (optional)
 
@@ -42,7 +42,7 @@ The default config works with mpv-handler v0.4 and newer. For older versions set
 
 - The script reads your clipboard locally every couple of seconds so the floating button can light up. Clipboard content never leaves your machine.
 - Torrents are posted only to your own TorrServer.
-- Poster lookups send the cleaned release title to AniList, iTunes or TMDB. That is the only outbound traffic.
+- Poster lookups send the cleaned release title to TMDB, IMDb, AniList, TVMaze, iTunes, Deezer or Wikipedia. That is the only outbound traffic, and the requests carry no cookies.
 - No analytics, no ads, no tracking, no accounts.
 
 ## Troubleshooting

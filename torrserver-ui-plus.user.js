@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         TorrServer ++
 // @namespace    torrserver-ui-plus
-// @version      1.3.2
-// @description  Copy link and MPV buttons on every torrent card (left click: playlist, right click: pick an episode), per-file MPV in the details dialog, and one-click adding of hashes, magnets and .torrent links with trackers appended, plus clean-name and cover lookup (TMDB, AniList, IMDb, TVMaze, iTunes, Deezer, Wikipedia). Cover lookups are sent without cookies. Clipboard is read locally only. MPV playback needs mpv-handler installed.
+// @version      1.4.0
+// @description  Copy link and MPV buttons on every torrent card (left click: playlist, right click: pick an episode), per-file MPV in the details dialog, and one-click adding of hashes, magnets and .torrent links with trackers appended, auto-detected category (Movies / Series / Music / Other) from the torrent name and file list, plus clean-name and cover lookup (TMDB, AniList, IMDb, TVMaze, iTunes, Deezer, Wikipedia). Cover lookups are sent without cookies. Clipboard is read locally only. MPV playback needs mpv-handler installed.
 // @license      MIT
 // @homepageURL  https://github.com/Bil8l/torrserver-plus
 // @supportURL   https://github.com/Bil8l/torrserver-plus/issues
@@ -148,11 +148,25 @@
 
   const basename = p => p.split('\\').pop().split('/').pop()
   const filesFromData = data => {
+    const text = String(data || '')
+    if (!text) return []
+    let parsed = null
     try {
-      return JSON.parse(data).TorrServer.Files || []
+      parsed = JSON.parse(text)
     } catch (_) {
-      return []
+      // some server builds ship the payload base64-encoded
+      try {
+        const bin = atob(text)
+        const bytes = new Uint8Array(bin.length)
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i)
+        parsed = JSON.parse(new TextDecoder('utf-8').decode(bytes))
+      } catch (_) {
+        return []
+      }
     }
+    if (!parsed) return []
+    const files = Array.isArray(parsed) ? parsed : (parsed.TorrServer && parsed.TorrServer.Files) || parsed.Files
+    return Array.isArray(files) ? files : []
   }
   const getPlayableFiles = torrent =>
     ((torrent.file_stats && torrent.file_stats.length ? torrent.file_stats : filesFromData(torrent.data)) || []).filter(
@@ -457,6 +471,11 @@
   const JUNK_TOKEN_RE =
     /^(?:season|complete|web|web-?dl|web-?rip|bluray|blu-?ray|bdrip|bdmv|bdremux|brrip|remux|dvd|dvdrip|hd-?dvd|hdtv|hdrip|hdr10?|dv|dolby|vision|atmos|x264|x265|h\.?264|h\.?265|hevc|avc|av1|aac|ac3|eac3|e-?ac-?3|dts(?:-?hd|-?ma|-?x)?|truehd|flac|mp3|opus|ddp|dd\+|10bit|8bit|hi10|multi|dual(?:audio)?|dubbed|subbed|subs?|proper|repack|extended|unrated|remastered|imax|yts(?:\.gg|\.bz|am)?|yify|eztv|rarbg|rartvx?|tgx|galaxyrg|mkvcage|psa|ettv|amzn|nf|atvp|dsnp|hmax|pmtp|stp|funi|crunchyroll|hidive|uhd|sdr|internal|limited|hybrid|ger|dub|german|eng|rus|jpn|ita|fre|spa|kor|chi)$/i
   const JUNK_TOKEN_PATTERNS = [/^s\d{1,2}(?:[-e]\d{1,3})+$/i, /^s\d{1,2}$/i, /^e\d{1,3}$/i, /^[\d.\-]+$/]
+  const AUDIO_EXT = /\.(mp3|flac|m4a|m4b|aac|ogg|oga|opus|wav|wma|aiff?|alac|ape|wv|dsf|dff)$/i
+  const MUSIC_NAME_RE =
+    /\b(?:ost|original[ ._-]?soundtrack|soundtrack|discography|album|various[ ._-]?artists|flac|mp3|320[ ._-]?kbps|24-?bit|16-?bit|vinyl|mixtape|unplugged|concert)\b/i
+  const SERIES_NAME_RE =
+    /\b(?:S\d{1,2}[ ._-]?(?:E\d{1,3}|Complete)|\d{1,2}x\d{2}\b|(?:Complete|Full|Entire)[ ._-]+Seasons?|Seasons?[ ._-]*\d{1,2}\b|S\d{1,2}\b)/i
 
   const cleanTorrentName = raw => {
     if (!raw) return null
@@ -493,6 +512,44 @@
       .join(' ')
     const full = title + (se ? ' ' + se : '') + (year ? ` (${year})` : '') + (res ? ` [${res}]` : '')
     return { title, full, se: !!se, year }
+  }
+
+  const detectKindFromFiles = files => {
+    if (!files || !files.length) return null
+    let audio = 0
+    let video = 0
+    let episodes = 0
+    for (const f of files) {
+      const p = String((f && f.path) || '')
+      if (!p) continue
+      if (VIDEO_EXT.test(p)) {
+        video++
+        if (SE_RE.test(p) || /\b\d{1,2}x\d{2}\b/.test(p)) episodes++
+      } else if (AUDIO_EXT.test(p)) {
+        audio++
+      }
+    }
+    if (!video && audio > 0) return { kind: 'music', strong: true }
+    if (episodes > 0) return { kind: 'series', strong: true }
+    if (video === 1 && !audio) return { kind: 'movie', strong: false }
+    return null
+  }
+
+  const detectKindFromName = raw => {
+    const s = String(raw || '')
+    if (SERIES_NAME_RE.test(s)) return { kind: 'series', strong: true }
+    if (MUSIC_NAME_RE.test(s) && !RES_RE.test(s)) return { kind: 'music', strong: true }
+    if (RES_RE.test(s) && YEAR_RE.test(s)) return { kind: 'movie', strong: false }
+    return null
+  }
+
+  // Strong signals beat weak ones; on equal strength, the file list beats the name.
+  const detectKind = (raw, files) => {
+    const fromFiles = detectKindFromFiles(files)
+    const fromName = detectKindFromName(raw)
+    if (fromFiles && fromFiles.strong) return fromFiles
+    if (fromName && fromName.strong) return fromName
+    return fromFiles || fromName
   }
 
   const gmJson = url =>
@@ -549,10 +606,20 @@
         if (r.ok) {
           const st = await r.json()
           if (st.name && !isPlaceholderTitle(st.name, hash)) {
-            return { raw: st.name, category: st.category || '', poster: st.poster || '' }
+            return {
+              raw: st.name,
+              category: st.category || '',
+              poster: st.poster || '',
+              files: filesFromData(st.data),
+            }
           }
           if (st.title && !isPlaceholderTitle(st.title, hash)) {
-            return { raw: st.title, category: st.category || '', poster: st.poster || '' }
+            return {
+              raw: st.title,
+              category: st.category || '',
+              poster: st.poster || '',
+              files: filesFromData(st.data),
+            }
           }
         }
       } catch (_) {}
@@ -561,11 +628,44 @@
     throw new Error('no metadata within 90 s, paste the hash again later')
   }
 
+  const DEFAULT_CATEGORIES = ['Movies', 'Series', 'Music', 'Other']
+  const KIND_DEFAULT_CATEGORY = { movie: 'Movies', series: 'Series', music: 'Music', other: 'Other' }
+  const KIND_CATEGORY_RE = {
+    movie: /^(movies?|films?|cinema)$/i,
+    series: /^(series|serials?|tv|tv[ ._-]?shows?|shows?|anime)$/i,
+    music: /^(music|audio|soundtracks?|music[ ._-]?videos?)$/i,
+    other: /^(other|misc|miscellaneous|xxx|adult|games?|software|apps?|books?|documents?)$/i,
+  }
+
+  const fetchAvailableCategories = async () => {
+    const cats = new Set(DEFAULT_CATEGORIES)
+    try {
+      const list = await apiPost({ action: 'list' }, 15000).then(r => r.json())
+      for (const t of list || []) {
+        const c = String((t && t.category) || '').trim()
+        if (c) cats.add(c)
+      }
+    } catch (_) {}
+    return Array.from(cats)
+  }
+
+  // Map a detected kind onto the categories the server actually offers; fall back to an
+  // Other-like category, then to the canonical default name.
+  const resolveCategory = async kind => {
+    const available = await fetchAvailableCategories()
+    const wanted = KIND_DEFAULT_CATEGORY[kind] || 'Other'
+    const hit =
+      available.find(c => c.toLowerCase() === wanted.toLowerCase()) ||
+      (KIND_CATEGORY_RE[kind] && available.find(c => KIND_CATEGORY_RE[kind].test(c.trim()))) ||
+      available.find(c => KIND_CATEGORY_RE.other.test(c.trim()))
+    return hit || wanted
+  }
+
   const anilistPoster = query =>
     new Promise((resolve, reject) => {
       const body = JSON.stringify({
         query:
-          'query ($s: String) { Page(page: 1, perPage: 3) { media(search: $s, type: ANIME) { coverImage { large } } } }',
+          'query ($s: String) { Page(page: 1, perPage: 3) { media(search: $s, type: ANIME) { coverImage { large } format } } }',
         variables: { s: query },
       })
       if (typeof GM_xmlhttpRequest === 'function') {
@@ -635,22 +735,27 @@
     return hit ? hit.artworkUrl100.replace(/\/\d+x\d+bb/, '/600x600bb') : ''
   }
 
+  // Returns { poster, kind } where kind is 'movie' | 'series' | 'music' | null. The lookup
+  // providers (TMDB media_type, IMDb q/qid, AniList format, TVMaze) are the only reliable
+  // way to tell movies from series when the release name carries no episode mark.
   const findCover = async (query, isSeries, year, category) => {
     const yr = Number(year) || 0
     if (/music|audio/i.test(String(category || ''))) {
+      let poster = ''
       try {
-        const c = await deezerCover(query)
-        if (c) return c
+        poster = await deezerCover(query)
       } catch (_) {}
-      try {
-        const c = await itunesCover('album', query)
-        if (c) return c
-      } catch (_) {}
-      try {
-        const c = (await wikiCover(`${query} album`)) || (await wikiCover(query))
-        if (c) return c
-      } catch (_) {}
-      return ''
+      if (!poster) {
+        try {
+          poster = await itunesCover('album', query)
+        } catch (_) {}
+      }
+      if (!poster) {
+        try {
+          poster = (await wikiCover(`${query} album`)) || (await wikiCover(query))
+        } catch (_) {}
+      }
+      return { poster, kind: 'music' }
     }
     try {
       const s = await fetch('/tmdb/settings').then(r => r.json())
@@ -662,7 +767,12 @@
             (yr ? `&year=${yr}` : ''),
         )
         const hit = (data.results || []).find(el => el.poster_path)
-        if (hit) return img + '/t/p/w300' + hit.poster_path
+        if (hit) {
+          return {
+            poster: img + '/t/p/w300' + hit.poster_path,
+            kind: hit.media_type === 'tv' ? 'series' : hit.media_type === 'movie' ? 'movie' : null,
+          }
+        }
       }
     } catch (_) {}
     try {
@@ -673,13 +783,27 @@
       )
       let hit = yr ? withImg.find(el => Math.abs((Number(el.y) || 0) - yr) <= 1) : null
       if (!hit) hit = withImg[0]
-      if (hit) return hit.i.imageUrl.replace(/(\._V1_)\.jpg$/i, '$1UX400_.jpg')
+      if (hit) {
+        const q = String(hit.qid || hit.q || '').toLowerCase()
+        const kind = /tv|series|episode/.test(q)
+          ? 'series'
+          : /movie|feature/.test(q)
+            ? 'movie'
+            : /music/.test(q)
+              ? 'music'
+              : null
+        return { poster: hit.i.imageUrl.replace(/(\._V1_)\.jpg$/i, '$1UX400_.jpg'), kind }
+      }
     } catch (_) {}
     try {
       const data = await anilistPoster(query)
       const media = (data && data.data && data.data.Page && data.data.Page.media) || []
       const hit = media.find(m => m.coverImage && m.coverImage.large)
-      if (hit) return hit.coverImage.large
+      if (hit) {
+        const fmt = String(hit.format || '').toUpperCase()
+        const kind = fmt === 'MOVIE' ? 'movie' : fmt === 'MUSIC' ? 'music' : fmt ? 'series' : null
+        return { poster: hit.coverImage.large, kind }
+      }
     } catch (_) {}
     if (isSeries) {
       try {
@@ -687,63 +811,81 @@
         const shows = (data || []).map(el => el.show).filter(s => s && s.image && (s.image.original || s.image.medium))
         let hit = yr ? shows.find(s => Math.abs((Number(String(s.premiered || '').slice(0, 4)) || 0) - yr) <= 1) : null
         if (!hit) hit = shows[0]
-        if (hit) return hit.image.original || hit.image.medium
+        if (hit) return { poster: hit.image.original || hit.image.medium, kind: 'series' }
       } catch (_) {}
     }
     for (const entity of isSeries ? ['tvSeason', 'movie'] : ['movie', 'tvSeason']) {
       try {
         const c = await itunesCover(entity, query)
-        if (c) return c
+        if (c) return { poster: c, kind: entity === 'tvSeason' ? 'series' : 'movie' }
       } catch (_) {}
     }
     try {
       const c = await deezerCover(query)
-      if (c) return c
+      if (c) return { poster: c, kind: 'music' }
     } catch (_) {}
     try {
       const hint = isSeries ? `${query} TV series` : `${query}${yr ? ' ' + yr : ''} film`
       const c = (await wikiCover(hint)) || (await wikiCover(`${query}${yr ? ' ' + yr : ''}`))
-      if (c) return c
+      if (c) return { poster: c, kind: null }
     } catch (_) {}
-    return ''
+    return { poster: '', kind: null }
   }
 
   const autoFixTorrent = async hash => {
     const meta = await fetchTorrentMeta(hash)
     const clean = cleanTorrentName(meta.raw)
     if (!clean) throw new Error(`could not parse name "${meta.raw}"`)
-    const poster = await findCover(clean.title, clean.se, clean.year, meta.category)
+    const local = detectKind(meta.raw, meta.files)
+    const isSeries = !!(clean.se || (local && local.kind === 'series'))
+    const cover = await findCover(
+      clean.title,
+      isSeries,
+      clean.year,
+      meta.category || (local && local.kind === 'music' ? 'Music' : ''),
+    )
+    let kind = local
+    if (cover.kind && (!kind || !kind.strong)) kind = { kind: cover.kind, strong: true }
+    const existingCategory = String(meta.category || '').trim()
+    // keep a category the user already picked; fill one in only when missing
+    const category = existingCategory || (await resolveCategory(kind ? kind.kind : 'other'))
     const r = await apiPost({
       action: 'set',
       hash,
       title: clean.full,
-      poster: poster || meta.poster,
-      category: meta.category,
+      poster: cover.poster || meta.poster,
+      category,
     })
     if (!r.ok) throw new Error('set failed (HTTP ' + r.status + ')')
-    return { title: clean.full, poster: poster || meta.poster }
+    return {
+      title: clean.full,
+      poster: cover.poster || meta.poster,
+      category,
+      categorySet: !existingCategory,
+    }
   }
 
   const runAutoFix = hashes => {
     ;(async () => {
       let okCount = 0
       let coverCount = 0
+      let catCount = 0
       const fails = []
       for (const h of hashes) {
         try {
           const r = await autoFixTorrent(h)
           okCount++
           if (r.poster) coverCount++
+          if (r.categorySet) catCount++
         } catch (e) {
           fails.push(`${h.slice(0, 8)}… ${e.message}`)
         }
       }
       if (okCount) {
-        toast(
-          coverCount
-            ? `Clean name applied to ${okCount} torrent${okCount > 1 ? 's' : ''} (cover: ${coverCount}/${okCount})`
-            : `Clean name applied to ${okCount} torrent${okCount > 1 ? 's' : ''}, no cover found`,
-        )
+        const parts = [`Clean name applied to ${okCount} torrent${okCount > 1 ? 's' : ''}`]
+        parts.push(coverCount ? `cover: ${coverCount}/${okCount}` : 'no cover found')
+        if (catCount) parts.push(`category: ${catCount}/${okCount}`)
+        toast(parts.join(' · '))
       }
       if (fails.length) toast(fails.join(' · '), true)
     })()
@@ -793,7 +935,7 @@
         <div class="tsqa-title">Quick add: hash to magnet</div>
         <textarea class="tsqa-textarea" placeholder="Paste a hash, a magnet, a .torrent link, or any text containing them, one or more. Trackers are added automatically."></textarea>
         <div class="tsqa-info">&nbsp;</div>
-        <label class="tsqa-auto"><input type="checkbox"> Auto: clean name &amp; fetch cover</label>
+        <label class="tsqa-auto"><input type="checkbox"> Auto: clean name, category &amp; cover</label>
         <div class="tsqa-row">
           <button class="tsqa-paste" type="button">Paste</button>
           <button class="tsqa-clear" type="button">Clear</button>

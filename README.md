@@ -13,6 +13,7 @@ There is no added top bar and no sort-and-arrange panel in the sidebar. The orig
 - the left rail and drawer switch between All, Movies, Series, Music, Other and Uncategorized;
 - the cards keep their native Details / Playlist or Play / Drop / Delete buttons;
 - the script adds **Copy link** and **MPV** above the native buttons;
+- clicking anywhere on a card (poster, title, size row) opens Details with the file tree;
 - the details dialog gets a file tree on the left, not another page or overlay.
 
 The default skins, colors and layout are left alone. Only the buttons, the MPV launcher, the details tree and the small privacy dock are added.

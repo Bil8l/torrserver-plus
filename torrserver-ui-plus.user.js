@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         TorrServer ++
 // @namespace    torrserver-ui-plus
-// @version      1.9.2
-// @description  Copy link and MPV buttons on every torrent card (left click: playlist, right click: pick an episode), per-file MPV in the details dialog, an expandable file tree in the details dialog to browse nested folders and stream any file, season grouping with one-click play-a-whole-season and season watched marks, multi-select checkboxes that build a playlist link from any picked set of episodes, folder-grouped episode menus that open at the cursor, a fast MPV launcher with hover prewarm and live peers/buffer, a watch tracker with a continue-watching shelf, watched checkmarks in the tree and MPV resume from the last watched episode, one-click adding of hashes, magnets and .torrent links with trackers appended, auto-detected category (Movies / Series / Music / Other) from the torrent name and file list, clean-name and cover lookup (TMDB, AniList, IMDb, TVMaze, iTunes, Deezer, Wikipedia), and a local privacy mode that blocks public trackers, cover lookups, external posters and save_to_db. Cover lookups are sent without cookies. Clipboard is read locally only. MPV playback needs mpv-handler installed.
+// @version      1.9.3
+// @description  Copy link and MPV buttons on every torrent card (left click: playlist, right click: pick an episode), one click anywhere on a card opens its details and file tree, per-file MPV in the details dialog, an expandable file tree in the details dialog to browse nested folders and stream any file, season grouping with one-click play-a-whole-season and season watched marks, multi-select checkboxes that build a playlist link from any picked set of episodes, folder-grouped episode menus that open at the cursor, a fast MPV launcher with hover prewarm and live peers/buffer, a watch tracker with a continue-watching shelf, watched checkmarks in the tree and MPV resume from the last watched episode, one-click adding of hashes, magnets and .torrent links with trackers appended, auto-detected category (Movies / Series / Music / Other) from the torrent name and file list, clean-name and cover lookup (TMDB, AniList, IMDb, TVMaze, iTunes, Deezer, Wikipedia), and a local privacy mode that blocks public trackers, cover lookups, external posters and save_to_db. Cover lookups are sent without cookies. Clipboard is read locally only. MPV playback needs mpv-handler installed.
 // @license      MIT
 // @homepageURL  https://github.com/Bil8l/torrserver-plus
 // @supportURL   https://github.com/Bil8l/torrserver-plus/issues
@@ -290,6 +290,11 @@
     .ts-card-copy:active, .ts-card-mpv:active { transform: translateY(1px); }
     .ts-card-copy:focus-visible, .ts-card-mpv:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
+    /* the whole card opens details: pointer cursor + subtle hover response; buttons keep their own cursor */
+    .ts-card-open { cursor: pointer; transition: filter .16s ease; }
+    .ts-card-open:hover { filter: brightness(1.07); }
+    .ts-card-open:active { filter: brightness(0.97); }
+
     /* cursor episode menu */
     #ts-mpv-menu {
       background: #242728; color: #f1eff3; border: 1px solid rgba(255,255,255,0.14);
@@ -572,6 +577,7 @@
     row.classList.add('ts-has-copy')
 
     addMpvButton(row)
+    makeCardClickable(row)
   }
 
   const addMpvButton = row => {
@@ -637,6 +643,27 @@
       )
     })
     row.insertBefore(mpvBtn, row.children[2])
+  }
+
+  // click anywhere on a card that is not a button or link opens the details dialog,
+  // so the file tree is one click away without aiming for the Details button
+  const makeCardClickable = row => {
+    const card = row.parentElement
+    if (!card || card === document.body || card.classList.contains('ts-card-open')) return
+    // never attach to the cards grid itself (its children are the cards, not card parts)
+    const kids = Array.from(card.children)
+    if (kids.length > 1 && kids.every(c => c.querySelector && c.querySelector('.ts-card-copy'))) return
+    if (!findTorrent(card)) return
+    card.classList.add('ts-card-open')
+    card.title = 'Click to open details and the file tree'
+    card.addEventListener('click', e => {
+      if (e.button !== 0) return
+      if (e.target.closest && e.target.closest('button, a, input, textarea, select, label, [role="button"]')) return
+      const sel = window.getSelection()
+      if (sel && !sel.isCollapsed) return
+      const details = row.querySelector('button:not(.ts-card-copy):not(.ts-card-mpv)')
+      if (details) details.click()
+    })
   }
 
   const humanizeSize = n => {
